@@ -21,6 +21,9 @@ object DataItem:
       string => Instant.parse(string)
     )
 
+  def fromInput(title: String, description: String) =
+    DataItem(Instant.now(), title, description, Status.TODO)
+
 enum Status derives ReadWriter:
   def progress() = this match
     case TODO       => INPROGRESS

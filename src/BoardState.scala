@@ -1,6 +1,17 @@
 import tui.widgets.ListWidget
 
-final case class AppState(
+/** State pertaining to the main board ui.
+  *
+  * @param todoState
+  *   state of the todo board
+  * @param inProgressState
+  *   state of the progress board
+  * @param items
+  *   all items that were loaded up
+  * @param focusedList
+  *   the focused list on the board
+  */
+final case class BoardState(
     todoState: ListWidget.State,
     inProgressState: ListWidget.State,
     items: Array[DataItem],
@@ -77,9 +88,11 @@ final case class AppState(
               items(mainIndex).copy(status = items(mainIndex).status.progress())
       case _ => ()
 
-object AppState:
-  def fromData(data: Data): AppState =
-    AppState(
+  def withNewItem(dataItem: DataItem) = this.copy(items = items.appended(dataItem))
+
+object BoardState:
+  def fromData(data: Data): BoardState =
+    BoardState(
       todoState = ListWidget.State(selected = Some(0)),
       inProgressState = ListWidget.State(selected = None),
       items = data.items.toArray,
