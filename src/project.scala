@@ -10,11 +10,8 @@ import tui.crossterm.Event
 import tui.crossterm.KeyCode
 
 @main def run(): Unit = withTerminal: (jni, terminal) =>
-  val data = fs.retrieveData() match
-    case None =>
-      fs.createEmptyData()
-      Data.empty()
-    case Some(data) => Data(items = json.deserialize(data))
+  val config = Config.load()
+  val data = Data.load(config)
 
   val initialBoardState = BoardState.fromData(data)
 
@@ -24,7 +21,7 @@ import tui.crossterm.KeyCode
       case key: Event.Key =>
         key.keyEvent().code() match
           case char: KeyCode.Char if char.c() == 'q' =>
-            fs.saveData(json.serialize(state.items))
+            Data.save(config, state.items)
             ()
           case char: KeyCode.Char if char.c() == 'k' =>
             state.previous()
