@@ -4,7 +4,7 @@ import dev.dirs.ProjectDirectories
 final case class Config(dataFile: os.Path) derives ReadWriter
 
 object Config:
-  private val projectDirs = ProjectDirectories.from("io", "kipp", "daily")
+  private val projectDirs = ProjectDirectories.from("io", "kipp", "skan")
   private lazy val dataDir = projectDirs.dataDir
   private val configDir = projectDirs.configDir
   private val configFile = os.Path(configDir) / "config.json"
