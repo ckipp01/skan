@@ -14,7 +14,6 @@ object Config:
     upickle.default.read[Config](json)
 
   def load(): Config =
-    println(configFile)
     if os.exists(configFile) then fromJson(os.read(configFile))
     else Config(defaultDataFile)
 

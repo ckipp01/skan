@@ -94,7 +94,9 @@ final case class BoardState(
 object BoardState:
   def fromData(data: Data): BoardState =
     BoardState(
-      todoState = ListWidget.State(selected = Some(0)),
+      todoState = ListWidget.State(selected =
+        if data.items.size > 0 then Some(0) else None
+      ),
       inProgressState = ListWidget.State(selected = None),
       items = data.items.toArray,
       focusedList = Status.TODO
