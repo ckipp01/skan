@@ -88,7 +88,8 @@ final case class BoardState(
               items(mainIndex).copy(status = items(mainIndex).status.progress())
       case _ => ()
 
-  def withNewItem(dataItem: DataItem) = this.copy(items = items.appended(dataItem))
+  def withNewItem(dataItem: DataItem) =
+    this.copy(items = items.appended(dataItem))
 
 object BoardState:
   def fromData(data: Data): BoardState =
