@@ -1,6 +1,11 @@
 import upickle.default.ReadWriter
 import dev.dirs.ProjectDirectories
 
+/** Representation of all the configuration options of skan.
+  *
+  * @param dataFile
+  *   The location of where to read the data from.
+  */
 final case class Config(dataFile: os.Path) derives ReadWriter
 
 object Config:
@@ -13,6 +18,11 @@ object Config:
   private def fromJson(json: String) =
     upickle.default.read[Config](json)
 
+  /** Load up the configuration file from disk.
+    *
+    * @return
+    *   The Config created
+    */
   def load(): Config =
     if os.exists(configFile) then fromJson(os.read(configFile))
     else Config(defaultDataFile)
