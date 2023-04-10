@@ -18,13 +18,22 @@ final case class BoardState(
     focusedList: Status
 ):
 
-  def todoItems() = items.collect:
+  def todoItems(): Array[DataItem] = items.collect:
     case item @ DataItem(_, _, _, Status.TODO) => item
 
-  def inProgressItems() = items.collect:
+  def inProgressItems(): Array[DataItem] = items.collect:
     case item @ DataItem(_, _, _, Status.INPROGRESS) => item
 
-  def switchView() =
+  /** Switches the main view in the board UI. The progression goes:
+    *
+    * TODO -> INPROGRESS
+    *
+    * INPROGRESS -> TODO
+    *
+    * @return
+    *   the new BoardState
+    */
+  def switchView(): BoardState =
     focusedList match
       case Status.TODO =>
         todoState.selected = None
@@ -87,6 +96,22 @@ final case class BoardState(
             items(mainIndex) =
               items(mainIndex).copy(status = items(mainIndex).status.progress())
       case _ => ()
+
+  def delete() =
+    focusedList match
+      case Status.TODO =>
+        todoState.selected match
+          case None => this
+          case Some(selectedIndex) =>
+            val mainIndex = items.indexOf(todoItems()(selectedIndex))
+            this.copy(items = items.filterNot(_ == items(mainIndex)))
+      case Status.INPROGRESS =>
+        inProgressState.selected match
+          case None => this
+          case Some(selectedIndex) =>
+            val mainIndex = items.indexOf(inProgressItems()(selectedIndex))
+            this.copy(items = items.filterNot(_ == items(mainIndex)))
+      case _ => this
 
   def withNewItem(dataItem: DataItem) =
     this.copy(items = items.appended(dataItem))

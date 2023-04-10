@@ -35,6 +35,9 @@ import tui.crossterm.KeyCode
             runBoard(newState)
           case char: KeyCode.Char if char.c() == 'n' =>
             runInput(state, InputState.fresh())
+          case char: KeyCode.Char if char.c() == 'x' =>
+            val newState = state.delete()
+            runBoard(newState)
           case char: KeyCode.Enter =>
             state.progress()
             runBoard(state)
