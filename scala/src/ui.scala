@@ -5,14 +5,22 @@ import tui.widgets.ParagraphWidget
 
 object ui:
   def render(frame: Frame, state: BoardState): Unit =
-    val chunks = Layout(
+    val verticalChunk = Layout(
+      direction = Direction.Vertical,
+      constraints = Array(
+        Constraint.Percentage(90),
+        Constraint.Length(3)
+      ),
+      margin = Margin(5)
+    ).split(frame.size)
+
+    val horizontalChunks = Layout(
       direction = Direction.Horizontal,
       constraints = Array(
         Constraint.Percentage(50),
         Constraint.Percentage(50)
-      ),
-      margin = Margin(5)
-    ).split(frame.size)
+      )
+    ).split(verticalChunk(0))
 
     def toListItem(item: DataItem, maxWidth: Int) =
       val title =
@@ -35,12 +43,12 @@ object ui:
     val todoItems = state
       .todoItems()
       .map: item =>
-        toListItem(item, chunks(0).width)
+        toListItem(item, horizontalChunks(0).width)
 
     val inProgressItems = state
       .inProgressItems()
       .map: item =>
-        toListItem(item, chunks(1).width)
+        toListItem(item, horizontalChunks(1).width)
 
     frame.render_stateful_widget(
       ListWidget(
@@ -53,7 +61,7 @@ object ui:
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
-      chunks(0)
+      horizontalChunks(0)
     )(state.todoState)
 
     frame.render_stateful_widget(
@@ -67,8 +75,34 @@ object ui:
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
-      chunks(1)
+      horizontalChunks(1)
     )(state.inProgressState)
+
+    val msg = Text.from(
+      Span.styled("j ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(down)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("k ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(up)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("h ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(left)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("l ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(right)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(progress)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("n ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(new)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(quit)", Style(add_modifier = Modifier.DIM))
+    )
+
+    val helpMessage = ParagraphWidget(text = msg)
+    frame.render_widget(helpMessage, verticalChunk(1))
   end render
 
   def render(frame: Frame, state: InputState): Unit =
@@ -83,30 +117,6 @@ object ui:
           Constraint.Length(3)
         )
     ).split(frame.size)
-
-    val (msg, style) = state.inputMode match
-      case InputMode.Normal =>
-        (
-          Text.from(
-            Span.nostyle("Press "),
-            Span.styled("q", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.nostyle(" to exit, "),
-            Span.styled("i", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.nostyle(" to start editing.")
-          ),
-          Style.DEFAULT.add_modifier(Modifier.SLOW_BLINK)
-        )
-      case InputMode.Input =>
-        (
-          Text.from(
-            Span.nostyle("Press "),
-            Span.styled("Esc", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.nostyle(" to stop editing, "),
-            Span.styled("Enter", Style.DEFAULT.add_modifier(Modifier.BOLD)),
-            Span.nostyle(" to move to the next step.")
-          ),
-          Style.DEFAULT
-        )
 
     val titleWidget = ParagraphWidget(
       text = Text.nostyle(state.title),
@@ -149,7 +159,27 @@ object ui:
           y = chunks(chunk).y + 1
         )
 
-    val helpText = msg.overwrittenStyle(style)
+    val msg = state.inputMode match
+      case InputMode.Normal =>
+        (
+          Text.from(
+            Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
+            Span.styled("(exit)", Style(add_modifier = Modifier.DIM)),
+            Span.nostyle(" | "),
+            Span.styled("i ", Style(add_modifier = Modifier.BOLD)),
+            Span.styled("(edit)", Style(add_modifier = Modifier.DIM))
+          )
+        )
+      case InputMode.Input =>
+        (
+          Text.from(
+            Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
+            Span.styled("(next)", Style(add_modifier = Modifier.DIM)),
+            Span.nostyle(" | "),
+            Span.styled("ESC", Style(add_modifier = Modifier.BOLD)),
+            Span.nostyle("(stop editing)")
+          )
+        )
 
-    val helpMessage = ParagraphWidget(text = helpText)
+    val helpMessage = ParagraphWidget(text = msg)
     frame.render_widget(helpMessage, chunks(2))
