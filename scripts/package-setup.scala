@@ -1,5 +1,5 @@
 //> using scala "3.3.0-RC3"
-//> using lib "io.get-coursier:interface:1.0.14"
+//> using lib "io.get-coursier:interface:1.0.15"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
 
