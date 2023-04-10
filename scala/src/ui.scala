@@ -98,7 +98,10 @@ object ui:
       Span.styled("(new)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(quit)", Style(add_modifier = Modifier.DIM))
+      Span.styled("(quit)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("x ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(delete)", Style(add_modifier = Modifier.DIM))
     )
 
     val helpMessage = ParagraphWidget(text = msg)
