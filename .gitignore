@@ -1,3 +1,10 @@
 data.json
 .scala-build/
 .bsp/
+reports/
+jni-config.json
+libcrossterm.dylib
+libcrossterm.so
+crossterm.dll
+skan
+skan.build_artifacts.txt
