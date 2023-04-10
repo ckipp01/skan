@@ -8,3 +8,4 @@ libcrossterm.so
 crossterm.dll
 skan
 skan.build_artifacts.txt
+scripts/.scalafmt.conf

@@ -14,22 +14,33 @@ object ui:
       margin = Margin(5)
     ).split(frame.size)
 
-    def toListItem(item: DataItem) =
+    def toListItem(item: DataItem, maxWidth: Int) =
+      val title =
+        if item.title.length() > maxWidth - 5 then
+          item.title.substring(0, maxWidth - 5) + "..."
+        else item.title
+      val description =
+        if item.description.length() > maxWidth - 5 then
+          item.description.substring(0, maxWidth - 5) + "..."
+        else item.description
+
       val titleSpans = Spans.from(
-        Span.styled(item.title, Style(add_modifier = Modifier.BOLD))
+        Span.styled(title, Style(add_modifier = Modifier.BOLD))
       )
-      val descriptionSpan = Spans.from(Span.nostyle(item.description))
+      val descriptionSpan = Spans.from(
+        Span.styled(description, Style(add_modifier = Modifier.DIM))
+      )
       ListWidget.Item(Text(Array(titleSpans, descriptionSpan)))
 
     val todoItems = state
       .todoItems()
       .map: item =>
-        toListItem(item)
+        toListItem(item, chunks(0).width)
 
     val inProgressItems = state
       .inProgressItems()
       .map: item =>
-        toListItem(item)
+        toListItem(item, chunks(1).width)
 
     frame.render_stateful_widget(
       ListWidget(
