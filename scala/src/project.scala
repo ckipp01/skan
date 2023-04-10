@@ -91,6 +91,7 @@ import tui.crossterm.KeyCode
                       DataItem.fromInput(state.title, state.description)
                     )
                     runBoard(newState)
+              case _ => runInput(boardState, state)
       case _ => runInput(boardState, state)
 
   runBoard(initialBoardState)
