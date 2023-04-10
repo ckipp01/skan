@@ -78,10 +78,9 @@ object ui:
       constraints =
         // TODO make this look nicer. I don't love this now
         Array(
-          Constraint.Percentage(5),
-          Constraint.Percentage(10),
-          Constraint.Percentage(10),
-          Constraint.Percentage(75)
+          Constraint.Length(3),
+          Constraint.Length(3),
+          Constraint.Length(3)
         )
     ).split(frame.size)
 
@@ -109,11 +108,6 @@ object ui:
           Style.DEFAULT
         )
 
-    val text = msg.overwrittenStyle(style)
-
-    val helpMessage = ParagraphWidget(text = text)
-    frame.render_widget(helpMessage, chunks(0))
-
     val titleWidget = ParagraphWidget(
       text = Text.nostyle(state.title),
       block = Some(
@@ -125,7 +119,7 @@ object ui:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(titleWidget, chunks(1))
+    frame.render_widget(titleWidget, chunks(0))
 
     val descriptionWidget = ParagraphWidget(
       text = Text.nostyle(state.description),
@@ -141,16 +135,21 @@ object ui:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(descriptionWidget, chunks(2))
+    frame.render_widget(descriptionWidget, chunks(1))
 
     state.inputMode match
       case InputMode.Normal => ()
       case InputMode.Input =>
         val (focused, chunk) =
-          if state.focusedInput == InputSection.Title then (state.title, 1)
-          else (state.description, 2)
+          if state.focusedInput == InputSection.Title then (state.title, 0)
+          else (state.description, 1)
         // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
         frame.set_cursor(
           x = chunks(chunk).x + Grapheme(focused).width + 1,
           y = chunks(chunk).y + 1
         )
+
+    val helpText = msg.overwrittenStyle(style)
+
+    val helpMessage = ParagraphWidget(text = helpText)
+    frame.render_widget(helpMessage, chunks(2))
