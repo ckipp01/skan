@@ -18,8 +18,10 @@ install:
 	cp skan ~/bin/skan
 
 format:
-	scala-cli format .
+	scala-cli format scripts
+	scala-cli format scala
 
 format-check:
-	scala-cli format --check .
+	scala-cli format --check scrips
+	scala-cli format --check scala
 

@@ -86,13 +86,20 @@ object ui:
       .map: item =>
         toListItem(item, horizontalChunks(1).width)
 
+    val todoBorderTitle =
+      if state.focusedList == Status.TODO then
+        state.todoState.selected match
+          case Some(index) => s"TODOs-${index + 1}/${todoItems.size}"
+          case None        => s"TODOs-${todoItems.size}"
+      else "TODOs"
+
     frame.render_stateful_widget(
       ListWidget(
         items = todoItems,
         block = Some(
           BlockWidget(
             borders = Borders.ALL,
-            title = Some(Spans.nostyle("TODOs"))
+            title = Some(Spans.nostyle(todoBorderTitle))
           )
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
@@ -100,13 +107,21 @@ object ui:
       horizontalChunks(0)
     )(state.todoState)
 
+    val inProgressBorderTitle =
+      if state.focusedList == Status.INPROGRESS then
+        state.inProgressState.selected match
+          case Some(index) =>
+            s"In Progress-${index + 1}/${inProgressItems.size}"
+          case None => s"In Progress-${inProgressItems.size}"
+      else "In Progress"
+
     frame.render_stateful_widget(
       ListWidget(
         items = inProgressItems,
         block = Some(
           BlockWidget(
             borders = Borders.ALL,
-            title = Some(Spans.nostyle("In Progress"))
+            title = Some(Spans.nostyle(inProgressBorderTitle))
           )
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
