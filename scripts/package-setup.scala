@@ -17,7 +17,7 @@ import scala.jdk.CollectionConverters.*
   filesToCopy.foreach: file =>
     os.copy(
       from = file,
-      to = os.pwd / "scala" / "resources" / file.last,
+      to = os.pwd / "skan" / "resources" / file.last,
       replaceExisting = true
     )
   println("files copied and ready to package")

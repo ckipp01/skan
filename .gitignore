@@ -6,6 +6,6 @@ jni-config.json
 libcrossterm.dylib
 libcrossterm.so
 crossterm.dll
-skan
-skan.build_artifacts.txt
+skan-local
+skan-local.build_artifacts.txt
 scripts/.scalafmt.conf
