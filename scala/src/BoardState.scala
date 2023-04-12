@@ -79,7 +79,7 @@ final case class BoardState(
 
   /** Progress the state of the item to the next state.
     */
-  def progress() =
+  def progress(): Unit =
     focusedList match
       case Status.TODO =>
         todoState.selected match
@@ -97,7 +97,7 @@ final case class BoardState(
               items(mainIndex).copy(status = items(mainIndex).status.progress())
       case _ => ()
 
-  def delete() =
+  def delete(): BoardState =
     focusedList match
       case Status.TODO =>
         todoState.selected match
@@ -113,7 +113,7 @@ final case class BoardState(
             this.copy(items = items.filterNot(_ == items(mainIndex)))
       case _ => this
 
-  def withNewItem(dataItem: DataItem) =
+  def withNewItem(dataItem: DataItem): BoardState =
     this.copy(items = items.appended(dataItem))
 end BoardState
 

@@ -1,11 +1,14 @@
-import upickle.default.ReadWriter
-import dev.dirs.ProjectDirectories
 import java.time.ZoneId
+
+import dev.dirs.ProjectDirectories
+import upickle.default.ReadWriter
 
 /** Representation of all the configuration options of skan.
   *
   * @param dataFile
   *   The location of where to read the data from.
+  * @param zoneId
+  *   The ZoneId of the user.
   */
 final case class Config(
     dataFile: os.Path = Config.defaultDataFile,

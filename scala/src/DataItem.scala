@@ -1,6 +1,19 @@
 import upickle.default.ReadWriter
 import java.time.Instant
 
+/** The representation of what makes up an "item" on your lists.
+  *
+  * @param date
+  *   The date the item was created
+  * @param title
+  *   The title of the item
+  * @param description
+  *   A description of the item
+  * @param status
+  *   The current status of the item
+  * @param priority
+  *   The priority level of the item
+  */
 final case class DataItem(
     date: Instant,
     title: String,
@@ -26,7 +39,11 @@ object DataItem:
     * @return
     *   The new DataItem created
     */
-  def fromInput(title: String, description: String, priority: Priority) =
+  def fromInput(
+      title: String,
+      description: String,
+      priority: Priority
+  ): DataItem =
     DataItem(Instant.now(), title, description, Status.TODO, priority)
 
 /** The various states that a DataItem can be in.
