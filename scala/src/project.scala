@@ -17,7 +17,7 @@ import tui.crossterm.KeyCode
   val initialBoardState = BoardState.fromData(data)
 
   def runBoard(state: BoardState): Unit =
-    terminal.draw(f => ui.renderBoard(f, state))
+    terminal.draw(f => ui.renderBoard(f, state, config))
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match

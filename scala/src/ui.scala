@@ -1,5 +1,3 @@
-import java.time.ZoneId
-
 import tui.*
 import tui.widgets.BlockWidget
 import tui.widgets.ListWidget
@@ -7,7 +5,7 @@ import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
 
 object ui:
-  def renderBoard(frame: Frame, state: BoardState): Unit =
+  def renderBoard(frame: Frame, state: BoardState, config: Config): Unit =
     val verticalChunk = Layout(
       direction = Direction.Vertical,
       constraints = Array(
@@ -42,7 +40,7 @@ object ui:
         else item.description
 
       val localDate =
-        item.date.atZone(ZoneId.of("GMT+2")).toLocalDate().toString()
+        item.date.atZone(config.zoneId).toLocalDate().toString()
       val priority = item.priority.toString()
       val headerSpans =
         Spans.from(

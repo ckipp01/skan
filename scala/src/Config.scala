@@ -1,12 +1,16 @@
 import upickle.default.ReadWriter
 import dev.dirs.ProjectDirectories
+import java.time.ZoneId
 
 /** Representation of all the configuration options of skan.
   *
   * @param dataFile
   *   The location of where to read the data from.
   */
-final case class Config(dataFile: os.Path) derives ReadWriter
+final case class Config(
+    dataFile: os.Path = Config.defaultDataFile,
+    zoneId: ZoneId = ZoneId.of("GMT+2")
+) derives ReadWriter
 
 object Config:
   private val projectDirs = ProjectDirectories.from("io", "kipp", "skan")
@@ -25,7 +29,7 @@ object Config:
     */
   def load(): Config =
     if os.exists(configFile) then fromJson(os.read(configFile))
-    else Config(defaultDataFile)
+    else Config()
 
   given ReadWriter[os.Path] = upickle.default
     .readwriter[String]
@@ -33,3 +37,11 @@ object Config:
       path => path.toString(),
       string => os.Path(string)
     )
+
+  given ReadWriter[ZoneId] = upickle.default
+    .readwriter[String]
+    .bimap[ZoneId](
+      zoneId => zoneId.getId(),
+      string => ZoneId.of(string)
+    )
+end Config
