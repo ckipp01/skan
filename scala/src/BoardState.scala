@@ -19,10 +19,10 @@ final case class BoardState(
 ):
 
   def todoItems(): Array[DataItem] = items.collect:
-    case item @ DataItem(_, _, _, Status.TODO) => item
+    case item @ DataItem(_, _, _, Status.TODO, _) => item
 
   def inProgressItems(): Array[DataItem] = items.collect:
-    case item @ DataItem(_, _, _, Status.INPROGRESS) => item
+    case item @ DataItem(_, _, _, Status.INPROGRESS, _) => item
 
   /** Switches the main view in the board UI. The progression goes:
     *

@@ -1,10 +1,11 @@
 import tui.*
-import tui.widgets.ListWidget
 import tui.widgets.BlockWidget
+import tui.widgets.ListWidget
 import tui.widgets.ParagraphWidget
+import tui.widgets.tabs.TabsWidget
 
 object ui:
-  def render(frame: Frame, state: BoardState): Unit =
+  def renderBoard(frame: Frame, state: BoardState): Unit =
     val verticalChunk = Layout(
       direction = Direction.Vertical,
       constraints = Array(
@@ -106,15 +107,16 @@ object ui:
 
     val helpMessage = ParagraphWidget(text = msg)
     frame.render_widget(helpMessage, verticalChunk(1))
-  end render
+  end renderBoard
 
-  def render(frame: Frame, state: InputState): Unit =
+  def renderInput(frame: Frame, state: InputState): Unit =
     val chunks = Layout(
       direction = Direction.Vertical,
       margin = Margin(5),
       constraints =
         // TODO make this look nicer. I don't love this now
         Array(
+          Constraint.Length(3),
           Constraint.Length(3),
           Constraint.Length(3),
           Constraint.Length(3)
@@ -150,39 +152,68 @@ object ui:
 
     frame.render_widget(descriptionWidget, chunks(1))
 
-    state.inputMode match
-      case InputMode.Normal => ()
-      case InputMode.Input =>
-        val (focused, chunk) =
-          if state.focusedInput == InputSection.Title then (state.title, 0)
-          else (state.description, 1)
-        // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
-        frame.set_cursor(
-          x = chunks(chunk).x + Grapheme(focused).width + 1,
-          y = chunks(chunk).y + 1
-        )
+    val priorities = Priority.values.map: priority =>
+      Spans(Array(Span.nostyle(priority.toString())))
 
-    val msg = state.inputMode match
-      case InputMode.Normal =>
-        (
-          Text.from(
-            Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
-            Span.styled("(exit)", Style(add_modifier = Modifier.DIM)),
-            Span.nostyle(" | "),
-            Span.styled("i ", Style(add_modifier = Modifier.BOLD)),
-            Span.styled("(edit)", Style(add_modifier = Modifier.DIM))
-          )
+    val tabs = TabsWidget(
+      titles = priorities,
+      block = Some(
+        BlockWidget(
+          borders = Borders.ALL,
+          title = Some(Spans.nostyle("Priority"))
         )
-      case InputMode.Input =>
-        (
-          Text.from(
-            Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-            Span.styled("(next)", Style(add_modifier = Modifier.DIM)),
-            Span.nostyle(" | "),
-            Span.styled("ESC", Style(add_modifier = Modifier.BOLD)),
-            Span.nostyle("(stop editing)")
+      ),
+      selected = state.priority.ordinal,
+      highlight_style =
+        if state.focusedInput == InputSection.Priority then
+          Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
+        else Style.DEFAULT
+    )
+    frame.render_widget(tabs, chunks(2))
+
+    if state.focusedInput != InputSection.Priority then
+      state.inputMode match
+        case InputMode.Normal => ()
+        case InputMode.Input =>
+          val (focused, chunk) =
+            if state.focusedInput == InputSection.Title then (state.title, 0)
+            else (state.description, 1)
+          // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
+          frame.set_cursor(
+            x = chunks(chunk).x + Grapheme(focused).width + 1,
+            y = chunks(chunk).y + 1
           )
+
+    val msg = state.focusedInput match
+      case InputSection.Title | InputSection.Description =>
+        state.inputMode match
+          case InputMode.Normal =>
+            Text.from(
+              Span.styled("i ", Style(add_modifier = Modifier.BOLD)),
+              Span.styled("(edit)", Style(add_modifier = Modifier.DIM)),
+              Span.nostyle(" | "),
+              Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
+              Span.styled("(exit)", Style(add_modifier = Modifier.DIM))
+            )
+          case InputMode.Input =>
+            Text.from(
+              Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
+              Span.styled("(next)", Style(add_modifier = Modifier.DIM)),
+              Span.nostyle(" | "),
+              Span.styled("ESC", Style(add_modifier = Modifier.BOLD)),
+              Span.nostyle("(stop editing)")
+            )
+      case InputSection.Priority =>
+        Text.from(
+          Span.styled("TAB", Style(add_modifier = Modifier.BOLD)),
+          Span.nostyle("(select next)"),
+          Span.nostyle(" | "),
+          Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
+          Span.styled("(complete)", Style(add_modifier = Modifier.DIM)),
+          Span.nostyle(" | "),
+          Span.styled("q", Style(add_modifier = Modifier.BOLD)),
+          Span.nostyle("(quit)")
         )
 
     val helpMessage = ParagraphWidget(text = msg)
-    frame.render_widget(helpMessage, chunks(2))
+    frame.render_widget(helpMessage, chunks(3))

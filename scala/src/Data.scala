@@ -1,7 +1,5 @@
 import upickle.default.ReadWriter
 
-import java.time.Instant
-
 /** Just a wrapper around DataItems to represent the data that is read up from
   * disk.
   *
@@ -28,7 +26,8 @@ object Data:
   /** Save data back to the datafile location.
     *
     * @param config
-    *   The Config containing the datafile location.
+    *
+    * The Config containing the datafile location.
     * @param items
     *   Items to write to disk
     */
@@ -41,48 +40,3 @@ object Data:
 
   private def toJson(items: Array[DataItem]): String =
     upickle.default.write(items)
-
-final case class DataItem(
-    date: Instant,
-    title: String,
-    description: String,
-    status: Status
-) derives ReadWriter
-
-object DataItem:
-  given ReadWriter[Instant] = upickle.default
-    .readwriter[String]
-    .bimap[Instant](
-      instant => instant.toString(),
-      string => Instant.parse(string)
-    )
-
-  /** Given user input, create a DataItem from it.
-    *
-    * @param title
-    *   The titile of the new item
-    * @param description
-    *   The description of the new item
-    * @return
-    *   The new DataItem created
-    */
-  def fromInput(title: String, description: String) =
-    DataItem(Instant.now(), title, description, Status.TODO)
-
-/** The various states that a DataItem can be in.
-  */
-enum Status derives ReadWriter:
-  /** Given a Status, progress it to the next level. For now this is limited to
-    * TODO going to INPROGRESS and INPROGRESS moving to DONE.
-    *
-    * @return
-    *   The new Status
-    */
-  def progress(): Status = this match
-    case TODO       => INPROGRESS
-    case INPROGRESS => DONE
-    // TODO idn, for now just make these a no-op if you all them on here
-    case DONE    => DONE
-    case BLOCKED => BLOCKED
-
-  case TODO, INPROGRESS, BLOCKED, DONE

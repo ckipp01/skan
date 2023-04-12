@@ -16,6 +16,3 @@ clean:
 
 install:
 	cp skan ~/bin/skan
-
-
-

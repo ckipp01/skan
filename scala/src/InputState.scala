@@ -16,6 +16,7 @@ final case class InputState(
     var title: String = "",
     var description: String = "",
     inputMode: InputMode = InputMode.Normal,
+    priority: Priority = Priority.NORMAL,
     focusedInput: InputSection
 )
 
@@ -34,8 +35,8 @@ object InputState:
 enum InputMode:
   case Normal, Input
 
-/** The current input section the user is focused on. This is either the Title
-  * or the Description.
+/** The current input section the user is focused on. This is either the Title,
+  * Description, or Priority.
   */
 enum InputSection:
-  case Title, Description
+  case Title, Description, Priority

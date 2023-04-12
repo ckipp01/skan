@@ -1,4 +1,4 @@
-//> using scala "3.3.0-RC3"
+//> using scala "3.3.1-RC1-bin-20230411-d577300-NIGHTLY"
 //> using lib "com.olvind.tui::tui:0.0.5"
 //> using lib "com.lihaoyi::upickle:3.1.0"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
@@ -17,7 +17,7 @@ import tui.crossterm.KeyCode
   val initialBoardState = BoardState.fromData(data)
 
   def runBoard(state: BoardState): Unit =
-    terminal.draw(f => ui.render(f, state))
+    terminal.draw(f => ui.renderBoard(f, state))
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match
@@ -45,53 +45,93 @@ import tui.crossterm.KeyCode
       case _ => runBoard(state)
 
   def runInput(boardState: BoardState, state: InputState): Unit =
-    terminal.draw(f => ui.render(f, state))
+    def handleNormalMode(keyCode: KeyCode) =
+      keyCode match
+        case c: KeyCode.Char if c.c() == 'i' =>
+          val newState = state.copy(inputMode = InputMode.Input)
+          runInput(boardState, newState)
+        case c: KeyCode.Char if c.c() == 'q' =>
+          runBoard(boardState)
+        case _ => runInput(boardState, state)
+
+    def handleTextInput(
+        keyCode: KeyCode,
+        enter: () => InputState,
+        char: (c: Char) => Unit,
+        backSpace: () => Unit
+    ) =
+      keyCode match
+        case _: KeyCode.Esc =>
+          val newState = state.copy(inputMode = InputMode.Normal)
+          runInput(boardState, newState)
+
+        case c: KeyCode.Char =>
+          char(c.c())
+          runInput(boardState, state)
+
+        case c: KeyCode.Backspace =>
+          backSpace()
+          runInput(boardState, state)
+
+        case _: KeyCode.Enter =>
+          val newState = enter()
+          runInput(boardState, newState)
+
+        case _ => runInput(boardState, state)
+
+    terminal.draw(f => ui.renderInput(f, state))
+
     jni.read() match
       case key: Event.Key =>
-        state.inputMode match
-          case InputMode.Normal =>
+        state.focusedInput match
+          case InputSection.Title =>
+            state.inputMode match
+              case InputMode.Normal =>
+                handleNormalMode(key.keyEvent().code())
+
+              case InputMode.Input =>
+                handleTextInput(
+                  key.keyEvent().code(),
+                  () => state.copy(focusedInput = InputSection.Description),
+                  (char: Char) => state.title = state.title + char,
+                  () =>
+                    state.title =
+                      state.title.substring(0, state.title.length - 1)
+                )
+
+          case InputSection.Description =>
+            state.inputMode match
+              case InputMode.Normal =>
+                handleNormalMode(key.keyEvent().code())
+
+              case InputMode.Input =>
+                handleTextInput(
+                  key.keyEvent().code(),
+                  () => state.copy(focusedInput = InputSection.Priority),
+                  (char: Char) => state.description = state.description + char,
+                  () =>
+                    state.description = state.description
+                      .substring(0, state.description.length - 1)
+                )
+
+          case InputSection.Priority =>
             key.keyEvent().code() match
-              case c: KeyCode.Char if c.c() == 'i' =>
-                val newState = state.copy(inputMode = InputMode.Input)
+              case _: KeyCode.Enter =>
+                val newState = boardState.withNewItem(
+                  DataItem.fromInput(
+                    state.title,
+                    state.description,
+                    state.priority
+                  )
+                )
+                runBoard(newState)
+              case _: KeyCode.Tab =>
+                val newState = state.copy(priority = state.priority.shift())
                 runInput(boardState, newState)
               case c: KeyCode.Char if c.c() == 'q' =>
                 runBoard(boardState)
               case _ => runInput(boardState, state)
 
-          case InputMode.Input =>
-            key.keyEvent().code() match
-              case _: KeyCode.Esc =>
-                val newState = state.copy(inputMode = InputMode.Normal)
-                runInput(boardState, newState)
-              case c: KeyCode.Char =>
-                state.focusedInput match
-                  case InputSection.Title => state.title = state.title + c.c()
-                  case InputSection.Description =>
-                    state.description = state.description + c.c()
-                runInput(boardState, state)
-              case c: KeyCode.Backspace =>
-                state.focusedInput match
-                  case InputSection.Title =>
-                    state.title =
-                      state.title.substring(0, state.title.length - 1)
-                  case InputSection.Description =>
-                    state.description = state.description.substring(
-                      0,
-                      state.description.length - 1
-                    )
-                runInput(boardState, state)
-              case _: KeyCode.Enter =>
-                state.focusedInput match
-                  case InputSection.Title =>
-                    val newState =
-                      state.copy(focusedInput = InputSection.Description)
-                    runInput(boardState, newState)
-                  case InputSection.Description =>
-                    val newState = boardState.withNewItem(
-                      DataItem.fromInput(state.title, state.description)
-                    )
-                    runBoard(newState)
-              case _ => runInput(boardState, state)
       case _ => runInput(boardState, state)
 
   runBoard(initialBoardState)
