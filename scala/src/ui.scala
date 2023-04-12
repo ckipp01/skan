@@ -1,3 +1,5 @@
+import java.time.ZoneId
+
 import tui.*
 import tui.widgets.BlockWidget
 import tui.widgets.ListWidget
@@ -39,8 +41,24 @@ object ui:
           item.description.substring(0, maxWidth - 5) + "..."
         else item.description
 
-      val prioritySpans =
-        Spans.from(Span.styled(item.priority.toString(), priorityStyle))
+      val localDate =
+        item.date.atZone(ZoneId.of("GMT+2")).toLocalDate().toString()
+      val priority = item.priority.toString()
+      val headerSpans =
+        Spans.from(
+          Span.styled(priority, priorityStyle),
+          Span.nostyle(
+            " ".repeat(
+              horizontalChunks(0).width - (localDate
+                .length() + priority.length) - 2
+            )
+          ),
+          Span.styled(
+            item.date.toString(),
+            Style(fg = Some(Color.Gray), add_modifier = Modifier.ITALIC)
+              .add_modifier(Modifier.DIM)
+          )
+        )
       val titleSpans = Spans.from(
         Span.styled(title, Style(add_modifier = Modifier.BOLD))
       )
@@ -54,7 +72,7 @@ object ui:
         )
       )
       ListWidget.Item(
-        Text(Array(prioritySpans, titleSpans, descriptionSpans, spacerSpans))
+        Text(Array(headerSpans, titleSpans, descriptionSpans, spacerSpans))
       )
     end toListItem
 
