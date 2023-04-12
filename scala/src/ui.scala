@@ -24,6 +24,12 @@ object ui:
     ).split(verticalChunk(0))
 
     def toListItem(item: DataItem, maxWidth: Int) =
+      val priorityStyle = item.priority match
+        case Priority.LOW       => Style(fg = Some(Color.LightBlue))
+        case Priority.NORMAL    => Style(fg = Some(Color.Blue))
+        case Priority.IMPORTANT => Style(fg = Some(Color.Yellow))
+        case Priority.URGENT    => Style(fg = Some(Color.Red))
+
       val title =
         if item.title.length() > maxWidth - 5 then
           item.title.substring(0, maxWidth - 5) + "..."
@@ -33,13 +39,24 @@ object ui:
           item.description.substring(0, maxWidth - 5) + "..."
         else item.description
 
+      val prioritySpans =
+        Spans.from(Span.styled(item.priority.toString(), priorityStyle))
       val titleSpans = Spans.from(
         Span.styled(title, Style(add_modifier = Modifier.BOLD))
       )
-      val descriptionSpan = Spans.from(
+      val descriptionSpans = Spans.from(
         Span.styled(description, Style(add_modifier = Modifier.DIM))
       )
-      ListWidget.Item(Text(Array(titleSpans, descriptionSpan)))
+      val spacerSpans = Spans.from(
+        Span.styled(
+          " ".repeat(horizontalChunks(0).width),
+          Style(add_modifier = Modifier.DIM)
+        )
+      )
+      ListWidget.Item(
+        Text(Array(prioritySpans, titleSpans, descriptionSpans, spacerSpans))
+      )
+    end toListItem
 
     val todoItems = state
       .todoItems()

@@ -133,5 +133,7 @@ import tui.crossterm.KeyCode
               case _ => runInput(boardState, state)
 
       case _ => runInput(boardState, state)
+    end match
+  end runInput
 
   runBoard(initialBoardState)
