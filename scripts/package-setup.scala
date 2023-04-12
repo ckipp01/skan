@@ -67,3 +67,4 @@ def getSystemFiles(jar: os.Path) =
     resources.foreach(println)
     resources
   else throw new RuntimeException("Can't uzip jar")
+end getSystemFiles

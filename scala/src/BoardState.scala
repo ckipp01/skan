@@ -115,6 +115,7 @@ final case class BoardState(
 
   def withNewItem(dataItem: DataItem) =
     this.copy(items = items.appended(dataItem))
+end BoardState
 
 object BoardState:
   def fromData(data: Data): BoardState =

@@ -40,3 +40,4 @@ object Data:
 
   private def toJson(items: Array[DataItem]): String =
     upickle.default.write(items)
+end Data

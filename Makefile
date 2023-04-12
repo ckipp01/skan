@@ -16,3 +16,10 @@ clean:
 
 install:
 	cp skan ~/bin/skan
+
+format:
+	scala-cli format .
+
+format-check:
+	scala-cli format --check .
+

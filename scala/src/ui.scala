@@ -217,3 +217,5 @@ object ui:
 
     val helpMessage = ParagraphWidget(text = msg)
     frame.render_widget(helpMessage, chunks(3))
+  end renderInput
+end ui
