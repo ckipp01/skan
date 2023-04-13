@@ -25,3 +25,5 @@ format-check:
 	scala-cli format --check scripts
 	scala-cli format --check skan
 
+test:
+	scala-cli test skan
