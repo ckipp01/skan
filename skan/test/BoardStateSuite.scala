@@ -1,4 +1,5 @@
 import java.time.Instant
+
 class BoardStateSuite extends munit.FunSuite:
   import testData.*
 
