@@ -31,7 +31,7 @@ object ui:
       )
     ).split(verticalChunk(1))
 
-    val keys = contextState.boards.keys.toArray
+    val keys = contextState.boards.keys.toArray.sorted
     val contexts = keys.map: context =>
       Spans(Array(Span.nostyle(context)))
 

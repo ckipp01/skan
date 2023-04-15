@@ -7,11 +7,12 @@ import util.*
 class uiSuite extends munit.FunSuite:
 
   test("basic-board-todo"):
+    val fresh = contextState.copy(activeContext = "a")
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, contextState, config)
+      ui.renderBoard(frame, fresh, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -48,9 +49,10 @@ class uiSuite extends munit.FunSuite:
     assertBuffer(backend, expected)
 
   test("basic-board-progress"):
+    val fresh = contextState.copy(activeContext = "a")
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
-    val state = contextState.switchColumn()
+    val state = fresh.switchColumn()
 
     terminal.draw: frame =>
       ui.renderBoard(frame, state, config)
