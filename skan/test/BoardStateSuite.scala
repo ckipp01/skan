@@ -4,7 +4,7 @@ import testData.*
 class BoardStateSuite extends munit.FunSuite:
 
   test("can-be-initialized"):
-    val boardState = contextState.boards.head._2
+    val boardState = BoardState.fromData(defaultItems)
     assertEquals(boardState.items.size, 5)
     assertEquals(boardState.todoState.selected, Some(0))
     assertEquals(boardState.todoState.offset, 0)
@@ -15,7 +15,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(boardState.inProgressItems().size, 1)
 
   test("can-switch-view"):
-    val boardState = contextState.boards.head._2
+    val boardState = BoardState.fromData(defaultItems)
     val newState = boardState.switchView()
     assertEquals(newState.todoState.selected, None)
     assertEquals(newState.inProgressState.selected, Some(0))
@@ -27,7 +27,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(backAgain.focusedList, Status.TODO)
 
   test("can-next"):
-    val boardState = contextState.boards.head._2
+    val boardState = BoardState.fromData(defaultItems)
     boardState.next()
     assertEquals(boardState.todoState.selected, Some(1))
 
@@ -38,7 +38,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newState.inProgressState.selected, Some(0))
 
   test("can-previous"):
-    val boardState = contextState.boards.head._2
+    val boardState = BoardState.fromData(defaultItems)
     assertEquals(boardState.todoState.selected, Some(0))
     boardState.previous()
     assertEquals(boardState.todoState.selected, Some(2))
@@ -50,7 +50,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newState.inProgressState.selected, Some(0))
 
   test("can-delete"):
-    val boardState = contextState.boards.head._2
+    val boardState = BoardState.fromData(defaultItems)
     assertEquals(boardState.items.size, 5)
     assertEquals(boardState.todoItems().size, 3)
     val newState = boardState.delete()

@@ -4,7 +4,7 @@ import java.time.Instant
   * to disk in a tmp file, then load them back up to create our initial Data.
   */
 object testData:
-  private val defaultItems = Vector(
+  val defaultItems = Vector(
     DataItem(
       date = Instant.parse("2023-04-12T20:48:25.061615Z"),
       title = "Here is a normal one",
@@ -66,14 +66,14 @@ object testData:
     )
   )
 
-  private val tmp = os.temp(prefix = "skan-")
+  private val tmp = os.temp.dir(prefix = "skan-")
 
   val preContext = ContextState(
     Map(
-      "default" -> BoardState.fromData(defaultItems),
-      "secondary" -> BoardState.fromData(secondaryItems)
+      "a" -> BoardState.fromData(defaultItems),
+      "b" -> BoardState.fromData(secondaryItems)
     ),
-    activeContext = "default"
+    activeContext = "a"
   )
 
   // Basically a minimal round-trip just to ensure we can read and write
