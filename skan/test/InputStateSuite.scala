@@ -1,3 +1,5 @@
+package skan
+
 class InputStateSuite extends munit.FunSuite:
   test("can-be-initialized"):
     val state = InputState.fresh()

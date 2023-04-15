@@ -1,3 +1,5 @@
+package skan
+
 import tui.*
 import tui.internal.ranges
 import tui.internal.saturating.*

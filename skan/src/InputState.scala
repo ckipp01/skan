@@ -1,5 +1,4 @@
-// TODO I don't love the mix of mutability and immutability in here,
-// but for now let's just stick close to the example and try to adjust later.
+package skan
 
 /** State pertaining to the input section.
   *

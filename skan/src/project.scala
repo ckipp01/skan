@@ -6,53 +6,54 @@
 //> using resourceDir "../resources"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
 
+package skan
+
 import tui.*
 import tui.crossterm.Event
 import tui.crossterm.KeyCode
 
 @main def run(): Unit = withTerminal: (jni, terminal) =>
   val config = Config.load()
-  val data = Data.load(config)
+  val contextState = ContextState.fromConfig(config)
 
-  val initialBoardState = BoardState.fromData(data)
-
-  def runBoard(state: BoardState): Unit =
+  def run(state: ContextState): Unit =
     terminal.draw(f => ui.renderBoard(f, state, config))
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match
-          case char: KeyCode.Char if char.c() == 'q' =>
-            Data.save(config, state.items)
-            ()
+          case char: KeyCode.Char if char.c() == 'q' => state.save(config)
           case char: KeyCode.Char if char.c() == 'k' =>
             state.previous()
-            runBoard(state)
+            run(state)
           case char: KeyCode.Char if char.c() == 'j' =>
             state.next()
-            runBoard(state)
+            run(state)
           case char: KeyCode.Char if char.c() == 'l' || char.c() == 'h' =>
-            val newState = state.switchView()
-            runBoard(newState)
+            val newState = state.switchColumn()
+            run(newState)
           case char: KeyCode.Char if char.c() == 'n' =>
             runInput(state, InputState.fresh())
           case char: KeyCode.Char if char.c() == 'x' =>
             val newState = state.delete()
-            runBoard(newState)
-          case char: KeyCode.Enter =>
+            run(newState)
+          case _: KeyCode.Enter =>
             state.progress()
-            runBoard(state)
-          case _ => runBoard(state)
-      case _ => runBoard(state)
+            run(state)
+          case _: KeyCode.Tab =>
+            val newState = state.switchContext()
+            run(newState)
+          case _ => run(state)
+      case _ => run(state)
 
-  def runInput(boardState: BoardState, state: InputState): Unit =
+  def runInput(contextState: ContextState, state: InputState): Unit =
     def handleNormalMode(keyCode: KeyCode) =
       keyCode match
         case c: KeyCode.Char if c.c() == 'i' =>
           val newState = state.switchInputMode()
-          runInput(boardState, newState)
+          runInput(contextState, newState)
         case c: KeyCode.Char if c.c() == 'q' =>
-          runBoard(boardState)
-        case _ => runInput(boardState, state)
+          run(contextState)
+        case _ => runInput(contextState, state)
 
     def handleTextInput(
         keyCode: KeyCode,
@@ -62,21 +63,21 @@ import tui.crossterm.KeyCode
       keyCode match
         case _: KeyCode.Esc =>
           val newState = state.switchInputMode()
-          runInput(boardState, newState)
+          runInput(contextState, newState)
 
         case c: KeyCode.Char =>
           char(c.c())
-          runInput(boardState, state)
+          runInput(contextState, state)
 
         case c: KeyCode.Backspace =>
           backSpace()
-          runInput(boardState, state)
+          runInput(contextState, state)
 
         case _: KeyCode.Enter =>
           val newState = state.focusNext()
-          runInput(boardState, newState)
+          runInput(contextState, newState)
 
-        case _ => runInput(boardState, state)
+        case _ => runInput(contextState, state)
 
     terminal.draw(f => ui.renderInput(f, state))
 
@@ -115,25 +116,25 @@ import tui.crossterm.KeyCode
             key.keyEvent().code() match
               case _: KeyCode.Enter =>
                 if state.title.isEmpty() && state.description.isEmpty() then
-                  runBoard(boardState)
+                  run(contextState)
                 else
-                  val newState = boardState.withNewItem(
+                  val newState = contextState.withNewItem(
                     DataItem.fromInput(
                       state.title,
                       state.description,
                       state.priority
                     )
                   )
-                  runBoard(newState)
+                  run(newState)
               case _: KeyCode.Tab =>
                 val newState = state.copy(priority = state.priority.shift())
-                runInput(boardState, newState)
+                runInput(contextState, newState)
               case c: KeyCode.Char if c.c() == 'q' =>
-                runBoard(boardState)
-              case _ => runInput(boardState, state)
+                run(contextState)
+              case _ => runInput(contextState, state)
 
-      case _ => runInput(boardState, state)
+      case _ => runInput(contextState, state)
     end match
   end runInput
 
-  runBoard(initialBoardState)
+  run(contextState)

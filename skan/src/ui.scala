@@ -1,17 +1,26 @@
+package skan
+
 import tui.*
 import tui.widgets.BlockWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
 
 object ui:
-  def renderBoard(frame: Frame, state: BoardState, config: Config): Unit =
+  def renderBoard(
+      frame: Frame,
+      contextState: ContextState,
+      config: Config
+  ): Unit =
+    val state = contextState.boards(contextState.activeContext)
+
     val verticalChunk = Layout(
       direction = Direction.Vertical,
       constraints = Array(
-        Constraint.Percentage(90),
+        Constraint.Length(3),
+        Constraint.Percentage(80),
         Constraint.Length(3)
       ),
-      margin = Margin(5)
+      margin = Margin(3)
     ).split(frame.size)
 
     val horizontalChunks = Layout(
@@ -20,7 +29,25 @@ object ui:
         Constraint.Percentage(50),
         Constraint.Percentage(50)
       )
-    ).split(verticalChunk(0))
+    ).split(verticalChunk(1))
+
+    val keys = contextState.boards.keys.toArray.sorted
+    val contexts = keys.map: context =>
+      Spans(Array(Span.nostyle(context)))
+
+    val tabs = TabsWidget(
+      titles = contexts,
+      block = Some(
+        BlockWidget(
+          borders = Borders.ALL,
+          title = Some(Spans.nostyle("Contexts"))
+        )
+      ),
+      selected = keys.indexOf(contextState.activeContext),
+      highlight_style =
+        Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
+    )
+    frame.render_widget(tabs, verticalChunk(0))
 
     def toListItem(item: DataItem, maxWidth: Int) =
       val priorityStyle = item.priority match
@@ -153,21 +180,19 @@ object ui:
     )
 
     val helpMessage = ParagraphWidget(text = msg)
-    frame.render_widget(helpMessage, verticalChunk(1))
+    frame.render_widget(helpMessage, verticalChunk(2))
   end renderBoard
 
   def renderInput(frame: Frame, state: InputState): Unit =
     val chunks = Layout(
       direction = Direction.Vertical,
-      margin = Margin(5),
-      constraints =
-        // TODO make this look nicer. I don't love this now
-        Array(
-          Constraint.Length(3),
-          Constraint.Length(3),
-          Constraint.Length(3),
-          Constraint.Length(3)
-        )
+      margin = Margin(3),
+      constraints = Array(
+        Constraint.Length(3),
+        Constraint.Length(3),
+        Constraint.Length(3),
+        Constraint.Length(3)
+      )
     ).split(frame.size)
 
     val titleWidget = ParagraphWidget(
@@ -225,7 +250,6 @@ object ui:
           val (focused, chunk) =
             if state.focusedInput == InputSection.Title then (state.title, 0)
             else (state.description, 1)
-          // Make the cursor visible and ask tui-rs to put it at the specified coordinates after rendering
           frame.set_cursor(
             x = chunks(chunk).x + Grapheme(focused).width + 1,
             y = chunks(chunk).y + 1

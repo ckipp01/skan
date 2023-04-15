@@ -1,6 +1,8 @@
+package skan
+
+import munit.Assertions.*
 import tui.*
 import tui.internal.saturating.*
-import munit.Assertions.*
 
 import scala.collection.mutable
 

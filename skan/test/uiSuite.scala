@@ -1,40 +1,46 @@
+package skan
+
 import tui.*
+import testData.*
+import util.*
 
 class uiSuite extends munit.FunSuite:
 
-  import testData.*
-  import util.*
-
   test("basic-board-todo"):
-    val backend = TestBackend(80, 25)
+    val fresh = contextState.copy(activeContext = "a")
+    val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
-    val boardState = BoardState.fromData(data)
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, boardState, config)
+      ui.renderBoard(frame, fresh, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "     ┌TODOs-1/3────────────────────────┐┌In Progress──────────────────────┐     ",
-      "     │NORMAL                 2023-04-12││URGENT                 2023-04-12│     ",
-      "     │Here is a normal one             ││An urgent issue with no descri...│     ",
-      "     │Some description                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │LOW                    2023-04-12││                                 │     ",
-      "     │Here is a low one                ││                                 │     ",
-      "     │Some lowly description           ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     └─────────────────────────────────┘└─────────────────────────────────┘     ",
-      "     j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new)      ",
-      "                                                                                ",
-      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a │ b                                                                  │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-1/3──────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │NORMAL                   2023-04-12││URGENT                   2023-04-12│   ",
+      "   │Here is a normal one               ││An urgent issue with no descript...│   ",
+      "   │Some description                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │LOW                      2023-04-12││                                   │   ",
+      "   │Here is a low one                  ││                                   │   ",
+      "   │Some lowly description             ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │IMPORTANT                2023-04-12││                                   │   ",
+      "   │Here is an Important issue         ││                                   │   ",
+      "   │Short description                  ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -43,36 +49,41 @@ class uiSuite extends munit.FunSuite:
     assertBuffer(backend, expected)
 
   test("basic-board-progress"):
-    val backend = TestBackend(80, 25)
+    val fresh = contextState.copy(activeContext = "a")
+    val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
-    val boardState =
-      BoardState.fromData(data).copy(focusedList = Status.INPROGRESS)
+    val state = fresh.switchColumn()
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, boardState, config)
+      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "     ┌TODOs────────────────────────────┐┌In Progress-1────────────────────┐     ",
-      "     │NORMAL                 2023-04-12││URGENT                 2023-04-12│     ",
-      "     │Here is a normal one             ││An urgent issue with no descri...│     ",
-      "     │Some description                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │LOW                    2023-04-12││                                 │     ",
-      "     │Here is a low one                ││                                 │     ",
-      "     │Some lowly description           ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     │                                 ││                                 │     ",
-      "     └─────────────────────────────────┘└─────────────────────────────────┘     ",
-      "     j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new)      ",
-      "                                                                                ",
-      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a │ b                                                                  │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs──────────────────────────────┐┌In Progress-1/1────────────────────┐   ",
+      "   │NORMAL                   2023-04-12││URGENT                   2023-04-12│   ",
+      "   │Here is a normal one               ││An urgent issue with no descript...│   ",
+      "   │Some description                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │LOW                      2023-04-12││                                   │   ",
+      "   │Here is a low one                  ││                                   │   ",
+      "   │Some lowly description             ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │IMPORTANT                2023-04-12││                                   │   ",
+      "   │Here is an Important issue         ││                                   │   ",
+      "   │Short description                  ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -92,18 +103,18 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
+      "   ┌Title───────────────────────────────────────────────────────────────────┐   ",
+      "   │                                                                        │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌Description─────────────────────────────────────────────────────────────┐   ",
+      "   │                                                                        │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌Priority────────────────────────────────────────────────────────────────┐   ",
+      "   │ LOW │ NORMAL │ IMPORTANT │ URGENT                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   i (edit) | q (exit)                                                          ",
       "                                                                                ",
       "                                                                                ",
-      "     ┌Title───────────────────────────────────────────────────────────────┐     ",
-      "     │                                                                    │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     ┌Description─────────────────────────────────────────────────────────┐     ",
-      "     │                                                                    │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     ┌Priority────────────────────────────────────────────────────────────┐     ",
-      "     │ LOW │ NORMAL │ IMPORTANT │ URGENT                                  │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     i (edit) | q (exit)                                                        ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -135,18 +146,18 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
+      "   ┌Title───────────────────────────────────────────────────────────────────┐   ",
+      "   │Some title                                                              │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌Description─────────────────────────────────────────────────────────────┐   ",
+      "   │Some description                                                        │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌Priority────────────────────────────────────────────────────────────────┐   ",
+      "   │ LOW │ NORMAL │ IMPORTANT │ URGENT                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ENTER (next) | ESC(stop editing)                                             ",
       "                                                                                ",
       "                                                                                ",
-      "     ┌Title───────────────────────────────────────────────────────────────┐     ",
-      "     │Some title                                                          │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     ┌Description─────────────────────────────────────────────────────────┐     ",
-      "     │Some description                                                    │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     ┌Priority────────────────────────────────────────────────────────────┐     ",
-      "     │ LOW │ NORMAL │ IMPORTANT │ URGENT                                  │     ",
-      "     └────────────────────────────────────────────────────────────────────┘     ",
-      "     ENTER (next) | ESC(stop editing)                                           ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
