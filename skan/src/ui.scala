@@ -31,19 +31,18 @@ object ui:
       )
     ).split(verticalChunk(1))
 
-    val keys = contextState.boards.keys.toArray.sorted
-    val contexts = keys.map: context =>
+    val contexts = contextState.sortedKeys.map: context =>
       Spans(Array(Span.nostyle(context)))
 
     val tabs = TabsWidget(
-      titles = contexts,
+      titles = contexts.toArray,
       block = Some(
         BlockWidget(
           borders = Borders.ALL,
           title = Some(Spans.nostyle("Contexts"))
         )
       ),
-      selected = keys.indexOf(contextState.activeContext),
+      selected = contextState.sortedKeys.indexOf(contextState.activeContext),
       highlight_style =
         Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
     )
