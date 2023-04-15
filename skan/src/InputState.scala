@@ -18,7 +18,32 @@ final case class InputState(
     inputMode: InputMode = InputMode.Normal,
     priority: Priority = Priority.NORMAL,
     focusedInput: InputSection
-)
+):
+  /** Switch the input mode. Since there are only two modes, this simply toggles
+    * them back and forth.
+    *
+    * @return
+    *   The new state.
+    */
+  def switchInputMode(): InputState =
+    val newMode = inputMode match
+      case InputMode.Normal => InputMode.Input
+      case InputMode.Input  => InputMode.Normal
+    this.copy(inputMode = newMode)
+
+  /** Focus on the next portion of the input.
+    *
+    * @return
+    *   The new state
+    */
+  def focusNext(): InputState =
+    val newFocus = focusedInput match
+      case InputSection.Title       => InputSection.Description
+      case InputSection.Description => InputSection.Priority
+      case InputSection.Priority    => InputSection.Title
+    this.copy(focusedInput = newFocus)
+
+end InputState
 
 object InputState:
   /** A fresh InputState where essentiall everything is empty and the user is

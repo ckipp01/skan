@@ -48,7 +48,7 @@ import tui.crossterm.KeyCode
     def handleNormalMode(keyCode: KeyCode) =
       keyCode match
         case c: KeyCode.Char if c.c() == 'i' =>
-          val newState = state.copy(inputMode = InputMode.Input)
+          val newState = state.switchInputMode()
           runInput(boardState, newState)
         case c: KeyCode.Char if c.c() == 'q' =>
           runBoard(boardState)
@@ -56,13 +56,12 @@ import tui.crossterm.KeyCode
 
     def handleTextInput(
         keyCode: KeyCode,
-        enter: () => InputState,
         char: (c: Char) => Unit,
         backSpace: () => Unit
     ) =
       keyCode match
         case _: KeyCode.Esc =>
-          val newState = state.copy(inputMode = InputMode.Normal)
+          val newState = state.switchInputMode()
           runInput(boardState, newState)
 
         case c: KeyCode.Char =>
@@ -74,7 +73,7 @@ import tui.crossterm.KeyCode
           runInput(boardState, state)
 
         case _: KeyCode.Enter =>
-          val newState = enter()
+          val newState = state.focusNext()
           runInput(boardState, newState)
 
         case _ => runInput(boardState, state)
@@ -92,7 +91,6 @@ import tui.crossterm.KeyCode
               case InputMode.Input =>
                 handleTextInput(
                   key.keyEvent().code(),
-                  () => state.copy(focusedInput = InputSection.Description),
                   (char: Char) => state.title = state.title + char,
                   () =>
                     state.title =
@@ -107,7 +105,6 @@ import tui.crossterm.KeyCode
               case InputMode.Input =>
                 handleTextInput(
                   key.keyEvent().code(),
-                  () => state.copy(focusedInput = InputSection.Priority),
                   (char: Char) => state.description = state.description + char,
                   () =>
                     state.description = state.description
