@@ -114,14 +114,17 @@ import tui.crossterm.KeyCode
           case InputSection.Priority =>
             key.keyEvent().code() match
               case _: KeyCode.Enter =>
-                val newState = boardState.withNewItem(
-                  DataItem.fromInput(
-                    state.title,
-                    state.description,
-                    state.priority
+                if state.title.isEmpty() && state.description.isEmpty() then
+                  runBoard(boardState)
+                else
+                  val newState = boardState.withNewItem(
+                    DataItem.fromInput(
+                      state.title,
+                      state.description,
+                      state.priority
+                    )
                   )
-                )
-                runBoard(newState)
+                  runBoard(newState)
               case _: KeyCode.Tab =>
                 val newState = state.copy(priority = state.priority.shift())
                 runInput(boardState, newState)
