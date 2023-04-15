@@ -1,6 +1,5 @@
 import tui.*
 import tui.widgets.BlockWidget
-import tui.widgets.ListWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
 
@@ -69,7 +68,7 @@ object ui:
           Style(add_modifier = Modifier.DIM)
         )
       )
-      ListWidget.Item(
+      MyListWidget.Item(
         Text(Array(headerSpans, titleSpans, descriptionSpans, spacerSpans))
       )
     end toListItem
@@ -92,7 +91,7 @@ object ui:
       else "TODOs"
 
     frame.render_stateful_widget(
-      ListWidget(
+      MyListWidget(
         items = todoItems,
         block = Some(
           BlockWidget(
@@ -114,7 +113,7 @@ object ui:
       else "In Progress"
 
     frame.render_stateful_widget(
-      ListWidget(
+      MyListWidget(
         items = inProgressItems,
         block = Some(
           BlockWidget(
