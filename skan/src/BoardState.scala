@@ -116,12 +116,11 @@ final case class BoardState(
 end BoardState
 
 object BoardState:
-  def fromData(data: Data): BoardState =
+  def fromData(items: Vector[DataItem]): BoardState =
     BoardState(
-      todoState = MyListWidget.State(selected =
-        if data.items.size > 0 then Some(0) else None
-      ),
+      todoState =
+        MyListWidget.State(selected = if items.size > 0 then Some(0) else None),
       inProgressState = MyListWidget.State(selected = None),
-      items = data.items.toArray,
+      items = items.toArray,
       focusedList = Status.TODO
     )

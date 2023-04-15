@@ -5,13 +5,13 @@ import upickle.default.ReadWriter
 
 /** Representation of all the configuration options of skan.
   *
-  * @param dataFile
+  * @param dataDir
   *   The location of where to read the data from.
   * @param zoneId
   *   The ZoneId of the user.
   */
 final case class Config(
-    dataFile: os.Path = Config.defaultDataFile,
+    dataDir: os.Path = Config.defaultDataDir,
     zoneId: ZoneId = ZoneId.of("GMT+2")
 ) derives ReadWriter
 
@@ -20,7 +20,7 @@ object Config:
   private lazy val dataDir = projectDirs.dataDir
   private val configDir = projectDirs.configDir
   private val configFile = os.Path(configDir) / "config.json"
-  private lazy val defaultDataFile = os.Path(dataDir) / "data.json"
+  private lazy val defaultDataDir = os.Path(dataDir) / "contexts"
 
   private def fromJson(json: String) =
     upickle.default.read[Config](json)
@@ -28,7 +28,7 @@ object Config:
   /** Load up the configuration file from disk.
     *
     * @return
-    *   The Config created
+    *   The created Config
     */
   def load(): Config =
     if os.exists(configFile) then fromJson(os.read(configFile))

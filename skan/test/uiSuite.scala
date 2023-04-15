@@ -1,17 +1,15 @@
 import tui.*
+import testData.*
+import util.*
 
 class uiSuite extends munit.FunSuite:
-
-  import testData.*
-  import util.*
 
   test("basic-board-todo"):
     val backend = TestBackend(80, 25)
     val terminal = Terminal.init(backend)
-    val boardState = BoardState.fromData(data)
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, boardState, config)
+      ui.renderBoard(frame, contextState, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -45,11 +43,10 @@ class uiSuite extends munit.FunSuite:
   test("basic-board-progress"):
     val backend = TestBackend(80, 25)
     val terminal = Terminal.init(backend)
-    val boardState =
-      BoardState.fromData(data).copy(focusedList = Status.INPROGRESS)
+    val state = contextState.switchView()
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, boardState, config)
+      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",

@@ -1,10 +1,10 @@
 import java.time.Instant
+import testData.*
 
 class BoardStateSuite extends munit.FunSuite:
-  import testData.*
 
   test("can-be-initialized"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     assertEquals(boardState.items.size, 5)
     assertEquals(boardState.todoState.selected, Some(0))
     assertEquals(boardState.todoState.offset, 0)
@@ -15,7 +15,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(boardState.inProgressItems().size, 1)
 
   test("can-switch-view"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     val newState = boardState.switchView()
     assertEquals(newState.todoState.selected, None)
     assertEquals(newState.inProgressState.selected, Some(0))
@@ -27,7 +27,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(backAgain.focusedList, Status.TODO)
 
   test("can-next"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     boardState.next()
     assertEquals(boardState.todoState.selected, Some(1))
 
@@ -38,7 +38,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newState.inProgressState.selected, Some(0))
 
   test("can-previous"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     assertEquals(boardState.todoState.selected, Some(0))
     boardState.previous()
     assertEquals(boardState.todoState.selected, Some(2))
@@ -50,7 +50,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newState.inProgressState.selected, Some(0))
 
   test("can-delete"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     assertEquals(boardState.items.size, 5)
     assertEquals(boardState.todoItems().size, 3)
     val newState = boardState.delete()
@@ -63,7 +63,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newerState.inProgressItems().size, 0)
 
   test("new-item"):
-    val boardState = BoardState.fromData(data)
+    val boardState = contextState.boards.head._2
     assertEquals(boardState.items.size, 5)
     val newState = boardState.withNewItem(
       DataItem(
