@@ -28,3 +28,38 @@ jobs:
       - uses: VirtusLab/scala-cli-setup@main
 
       - run: make format-check
+
+  check-native-build-mac:
+    name: Check Graal Build (Mac)
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: coursier/cache-action@v6
+      - uses: VirtusLab/scala-cli-setup@main
+
+      - run: make prepare-for-graal package-mac
+
+  check-native-build-linux:
+    name: Check Graal Build (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: coursier/cache-action@v6
+      - uses: VirtusLab/scala-cli-setup@main
+
+      - run: make prepare-for-graal package-linux
+
+  # screw windows. I have no idea and can't get this to work
+  #check-native-build-windows:
+  #  name: Check Graal Build (Windows)
+  #  runs-on: windows-latest
+
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: coursier/cache-action@v6
+  #    - uses: VirtusLab/scala-cli-setup@main
+
+  #    - run: make prepare-for-graal package-windows
+  #      shell: bash
