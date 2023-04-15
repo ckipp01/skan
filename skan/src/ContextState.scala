@@ -12,6 +12,9 @@ case class ContextState(
     boards: Map[String, BoardState],
     activeContext: String
 ):
+  /** All the board names in a sorted fashion.
+    */
+  val sortedKeys = boards.keys.toVector.sorted
 
   /** Save all of the contexts to disk.
     *
@@ -73,10 +76,9 @@ case class ContextState(
       *   The new state.
       */
   def switchContext() =
-    val keys = boards.keys.toVector
-    val index = keys.indexOf(activeContext)
-    val newIndex = if index + 1 >= keys.length then 0 else index + 1
-    this.copy(activeContext = keys(newIndex))
+    val index = sortedKeys.indexOf(activeContext)
+    val newIndex = if index + 1 >= sortedKeys.length then 0 else index + 1
+    this.copy(activeContext = sortedKeys(newIndex))
 
 end ContextState
 
@@ -103,7 +105,7 @@ object ContextState:
           (name, BoardState.fromData(items))
         .toMap
       if boards.isEmpty then default(config.dataDir)
-      else ContextState(boards, boards.head._1)
+      else ContextState(boards, boards.keys.toVector.sorted.head)
     else default(config.dataDir)
 
   private def toJson(items: Array[DataItem]): String =
