@@ -1,3 +1,5 @@
+package skan
+
 import tui.*
 import tui.widgets.BlockWidget
 import tui.widgets.ParagraphWidget

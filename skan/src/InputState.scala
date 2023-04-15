@@ -1,3 +1,5 @@
+package skan
+
 /** State pertaining to the input section.
   *
   * @param title

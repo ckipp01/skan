@@ -1,3 +1,5 @@
+package skan
+
 case class ContextState(
     boards: Map[String, BoardState],
     activeContext: String

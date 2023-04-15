@@ -1,3 +1,5 @@
+package skan
+
 import java.time.ZoneId
 
 import dev.dirs.ProjectDirectories

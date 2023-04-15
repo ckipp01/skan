@@ -1,3 +1,5 @@
+package skan
+
 import upickle.default.ReadWriter
 import java.time.Instant
 

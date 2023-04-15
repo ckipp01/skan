@@ -5,6 +5,9 @@
 //> using lib "dev.dirs:directories:26"
 //> using resourceDir "../resources"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
+
+package skan
+
 import tui.*
 import tui.crossterm.Event
 import tui.crossterm.KeyCode

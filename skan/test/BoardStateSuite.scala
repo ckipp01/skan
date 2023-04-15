@@ -1,3 +1,5 @@
+package skan
+
 import java.time.Instant
 import testData.*
 

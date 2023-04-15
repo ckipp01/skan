@@ -1,3 +1,5 @@
+package skan
+
 import java.time.Instant
 
 /** Basically set up what we need for testing. We start with 5 items, write them

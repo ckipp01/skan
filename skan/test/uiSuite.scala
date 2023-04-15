@@ -1,3 +1,5 @@
+package skan
+
 import tui.*
 import testData.*
 import util.*
