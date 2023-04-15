@@ -43,7 +43,7 @@ object testData:
   )
 
   private val tmp = os.temp(prefix = "skan-")
-  private val config = Config(dataFile = tmp)
+  val config = Config(dataFile = tmp)
   Data.save(config, dataItems)
   val data = Data.load(config)
 end testData
