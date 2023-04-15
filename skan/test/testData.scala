@@ -81,5 +81,5 @@ object testData:
   // Basically a minimal round-trip just to ensure we can read and write
   val config = Config(dataDir = tmp)
   preContext.save(config)
-  val contextState = ContextState.load(config)
+  val contextState = ContextState.fromConfig(config)
 end testData

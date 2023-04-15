@@ -50,7 +50,7 @@ class uiSuite extends munit.FunSuite:
   test("basic-board-progress"):
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
-    val state = contextState.switchView()
+    val state = contextState.switchColumn()
 
     terminal.draw: frame =>
       ui.renderBoard(frame, state, config)

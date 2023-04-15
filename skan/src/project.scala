@@ -14,7 +14,7 @@ import tui.crossterm.KeyCode
 
 @main def run(): Unit = withTerminal: (jni, terminal) =>
   val config = Config.load()
-  val contextState = ContextState.load(config)
+  val contextState = ContextState.fromConfig(config)
 
   def run(state: ContextState): Unit =
     terminal.draw(f => ui.renderBoard(f, state, config))
@@ -29,7 +29,7 @@ import tui.crossterm.KeyCode
             state.next()
             run(state)
           case char: KeyCode.Char if char.c() == 'l' || char.c() == 'h' =>
-            val newState = state.switchView()
+            val newState = state.switchColumn()
             run(newState)
           case char: KeyCode.Char if char.c() == 'n' =>
             runInput(state, InputState.fresh())

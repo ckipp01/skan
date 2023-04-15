@@ -18,12 +18,12 @@ class BoardStateSuite extends munit.FunSuite:
 
   test("can-switch-view"):
     val boardState = BoardState.fromData(defaultItems)
-    val newState = boardState.switchView()
+    val newState = boardState.switchColumn()
     assertEquals(newState.todoState.selected, None)
     assertEquals(newState.inProgressState.selected, Some(0))
     assertEquals(newState.focusedList, Status.INPROGRESS)
 
-    val backAgain = newState.switchView()
+    val backAgain = newState.switchColumn()
     assertEquals(backAgain.todoState.selected, Some(0))
     assertEquals(backAgain.inProgressState.selected, None)
     assertEquals(backAgain.focusedList, Status.TODO)
@@ -33,7 +33,7 @@ class BoardStateSuite extends munit.FunSuite:
     boardState.next()
     assertEquals(boardState.todoState.selected, Some(1))
 
-    val newState = boardState.switchView()
+    val newState = boardState.switchColumn()
     assertEquals(newState.inProgressState.selected, Some(0))
     newState.next()
     // There is only 1 inProgressItem, so we assume it will stay the same
@@ -45,7 +45,7 @@ class BoardStateSuite extends munit.FunSuite:
     boardState.previous()
     assertEquals(boardState.todoState.selected, Some(2))
 
-    val newState = boardState.switchView()
+    val newState = boardState.switchColumn()
     assertEquals(newState.inProgressState.selected, Some(0))
     newState.previous()
     // There is only 1 inProgressItem, so we assume it will stay the same
@@ -59,7 +59,7 @@ class BoardStateSuite extends munit.FunSuite:
     assertEquals(newState.items.size, 4)
     assertEquals(newState.todoItems().size, 2)
 
-    val tempState = newState.switchView()
+    val tempState = newState.switchColumn()
     val newerState = tempState.delete()
     assertEquals(newerState.items.size, 3)
     assertEquals(newerState.inProgressItems().size, 0)

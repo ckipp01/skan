@@ -52,7 +52,6 @@ object DataItem:
   */
 enum Status derives ReadWriter:
   /** Given a Status, progress it to the next level. For now this is limited to
-    * TODO going to INPROGRESS and INPROGRESS moving to DONE.
     *
     * @return
     *   The new Status

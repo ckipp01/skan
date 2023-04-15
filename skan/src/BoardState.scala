@@ -1,6 +1,6 @@
 package skan
 
-/** State pertaining to the main board ui.
+/** State pertaining to a kanban board on the main UI.
   *
   * @param todoState
   *   state of the todo board
@@ -24,7 +24,7 @@ final case class BoardState(
   def inProgressItems(): Array[DataItem] = items.collect:
     case item @ DataItem(_, _, _, Status.INPROGRESS, _) => item
 
-  /** Switches the main view in the board UI. The progression goes:
+  /** Switches the main column view in the board UI. The progression goes:
     *
     * TODO -> INPROGRESS
     *
@@ -33,7 +33,7 @@ final case class BoardState(
     * @return
     *   the new BoardState
     */
-  def switchView(): BoardState =
+  def switchColumn(): BoardState =
     focusedList match
       case Status.TODO =>
         todoState.selected = None
@@ -97,6 +97,11 @@ final case class BoardState(
               items(mainIndex).copy(status = items(mainIndex).status.progress())
       case _ => ()
 
+  /** Delete the current focused item.
+    *
+    * @return
+    *   The new state without the item.
+    */
   def delete(): BoardState =
     focusedList match
       case Status.TODO =>
@@ -113,11 +118,26 @@ final case class BoardState(
             this.copy(items = items.filterNot(_ == items(mainIndex)))
       case _ => this
 
+  /** Add a new item to the items in this state.
+    *
+    * @param dataItem
+    *   The DataItem to add.
+    * @return
+    *   THe new state.
+    */
   def withNewItem(dataItem: DataItem): BoardState =
     this.copy(items = items.appended(dataItem))
 end BoardState
 
 object BoardState:
+  /** Given items that have been loaded up from disk, create a new BoardState
+    * out of them.
+    *
+    * @param items
+    *   The items to create the state from.
+    * @return
+    *   The newly created state.
+    */
   def fromData(items: Vector[DataItem]): BoardState =
     BoardState(
       todoState =
