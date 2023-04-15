@@ -1,5 +1,3 @@
-import tui.widgets.ListWidget
-
 /** State pertaining to the main board ui.
   *
   * @param todoState
@@ -12,8 +10,8 @@ import tui.widgets.ListWidget
   *   the focused list on the board
   */
 final case class BoardState(
-    todoState: ListWidget.State,
-    inProgressState: ListWidget.State,
+    todoState: MyListWidget.State,
+    inProgressState: MyListWidget.State,
     items: Array[DataItem],
     focusedList: Status
 ):
@@ -120,10 +118,10 @@ end BoardState
 object BoardState:
   def fromData(data: Data): BoardState =
     BoardState(
-      todoState = ListWidget.State(selected =
+      todoState = MyListWidget.State(selected =
         if data.items.size > 0 then Some(0) else None
       ),
-      inProgressState = ListWidget.State(selected = None),
+      inProgressState = MyListWidget.State(selected = None),
       items = data.items.toArray,
       focusedList = Status.TODO
     )
