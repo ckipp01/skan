@@ -7,12 +7,18 @@ import util.*
 class uiSuite extends munit.FunSuite:
 
   test("basic-board-todo"):
-    val fresh = contextState.copy(activeContext = "a")
+    val state = ContextState(
+      boards = Map(
+        "a" -> BoardState.fromData(defaultItems),
+        "b" -> BoardState.fromData(secondaryItems)
+      ),
+      activeContext = "a"
+    )
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, fresh, config)
+      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -49,13 +55,19 @@ class uiSuite extends munit.FunSuite:
     assertBuffer(backend, expected)
 
   test("basic-board-in-progress"):
-    val fresh = contextState.copy(activeContext = "a")
+    val state = ContextState(
+      boards = Map(
+        "a" -> BoardState.fromData(defaultItems),
+        "b" -> BoardState.fromData(secondaryItems)
+      ),
+      activeContext = "a"
+    )
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
-    val state = fresh.switchColumn()
+    val switched = state.switchColumn()
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
+      ui.renderBoard(frame, switched, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -92,17 +104,17 @@ class uiSuite extends munit.FunSuite:
     assertBuffer(backend, expected)
 
   test("basic-board-progress"):
-    val fresh = ContextState(
+    val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems)),
       activeContext = "a"
     )
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
 
-    fresh.progress()
+    state.progress()
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, fresh, config)
+      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -139,17 +151,17 @@ class uiSuite extends munit.FunSuite:
     assertBuffer(backend, expected)
 
   test("basic-board-progress-single"):
-    val fresh = ContextState(
+    val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
 
-    fresh.progress()
+    state.progress()
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, fresh, config)
+      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",

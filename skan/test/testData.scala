@@ -44,7 +44,7 @@ object testData:
     )
   )
 
-  private val secondaryItems = Vector(
+  val secondaryItems = Vector(
     BoardItem(
       date = Instant.parse("2023-04-12T20:48:25.061615Z"),
       title = "Here is a normal one",
@@ -70,7 +70,7 @@ object testData:
 
   private val tmp = os.temp.dir(prefix = "skan-")
 
-  val preContext = ContextState(
+  private val preContext = ContextState(
     Map(
       "a" -> BoardState.fromData(defaultItems),
       "b" -> BoardState.fromData(secondaryItems)
@@ -81,5 +81,4 @@ object testData:
   // Basically a minimal round-trip just to ensure we can read and write
   val config = Config(dataDir = tmp)
   preContext.save(config)
-  val contextState = ContextState.fromConfig(config)
 end testData

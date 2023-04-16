@@ -3,6 +3,8 @@ package skan
 class ContextStateSuite extends munit.FunSuite:
   import testData.*
 
+  val contextState = ContextState.fromConfig(config)
+
   test("can-be-initialized"):
     assertEquals(contextState.boards.size, 2)
     assertEquals(contextState.activeContext, "a")
