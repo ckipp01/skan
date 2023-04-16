@@ -18,6 +18,8 @@ final case class BoardState(
     focusedList: Status
 ):
 
+  // TODO an improvement would be during progress don't edit the array in place,
+  // instead make it a vector and then these can be vals here.
   def todoItems(): Array[BoardItem] = items.collect:
     case item @ BoardItem(_, _, _, Status.TODO, _) => item
 
@@ -37,11 +39,13 @@ final case class BoardState(
     focusedList match
       case Status.TODO =>
         todoState.selected = None
-        inProgressState.selected = Some(0)
+        if inProgressItems().isEmpty then None
+        else inProgressState.selected = Some(0)
         this.copy(focusedList = Status.INPROGRESS)
       case Status.INPROGRESS =>
         inProgressState.selected = None
-        todoState.selected = Some(0)
+        if todoItems().isEmpty then None
+        else todoState.selected = Some(0)
         this.copy(focusedList = Status.TODO)
       case _ => this
 
@@ -50,15 +54,17 @@ final case class BoardState(
   def next(): Unit =
     focusedList match
       case Status.TODO =>
-        val i = todoState.selected match
-          case None    => 0
-          case Some(i) => if i >= todoItems().length - 1 then 0 else i + 1
-        todoState.select(Some(i))
+        val newlySelected = todoState.selected match
+          case None => if todoItems().isEmpty then None else Some(0)
+          case Some(i) =>
+            if i >= todoItems().length - 1 then Some(0) else Some(i + 1)
+        todoState.select(newlySelected)
       case Status.INPROGRESS =>
-        val i = inProgressState.selected match
-          case None    => 0
-          case Some(i) => if i >= inProgressItems().length - 1 then 0 else i + 1
-        inProgressState.select(Some(i))
+        val newlySelected = inProgressState.selected match
+          case None => if inProgressItems().isEmpty then None else Some(0)
+          case Some(i) =>
+            if i >= inProgressItems().length - 1 then Some(0) else Some(i + 1)
+        inProgressState.select(newlySelected)
       case _ => ()
 
   /** Select the previous item in the list
@@ -66,15 +72,17 @@ final case class BoardState(
   def previous(): Unit =
     focusedList match
       case Status.TODO =>
-        val i = todoState.selected match
-          case None    => 0
-          case Some(i) => if i == 0 then todoItems().length - 1 else i - 1
-        todoState.select(Some(i))
+        val newlySelected = todoState.selected match
+          case None => if todoItems().isEmpty then None else Some(0)
+          case Some(i) =>
+            if i == 0 then Some(todoItems().length - 1) else Some(i - 1)
+        todoState.select(newlySelected)
       case Status.INPROGRESS =>
-        val i = inProgressState.selected match
-          case None    => 0
-          case Some(i) => if i == 0 then inProgressItems().length - 1 else i - 1
-        inProgressState.select(Some(i))
+        val newlySelected = inProgressState.selected match
+          case None => if inProgressItems().isEmpty then None else Some(0)
+          case Some(i) =>
+            if i == 0 then Some(inProgressItems().length - 1) else Some(i - 1)
+        inProgressState.select(newlySelected)
       case _ => ()
 
   /** Progress the state of the item to the next state.

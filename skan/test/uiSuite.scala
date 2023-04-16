@@ -48,7 +48,7 @@ class uiSuite extends munit.FunSuite:
     )
     assertBuffer(backend, expected)
 
-  test("basic-board-progress"):
+  test("basic-board-in-progress"):
     val fresh = contextState.copy(activeContext = "a")
     val backend = TestBackend(80, 30)
     val terminal = Terminal.init(backend)
@@ -76,6 +76,145 @@ class uiSuite extends munit.FunSuite:
       "   │IMPORTANT                2023-04-12││                                   │   ",
       "   │Here is an Important issue         ││                                   │   ",
       "   │Short description                  ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
+  test("basic-board-progress"):
+    val fresh = ContextState(
+      boards = Map("a" -> BoardState.fromData(defaultItems)),
+      activeContext = "a"
+    )
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    fresh.progress()
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, fresh, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a                                                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-1/2──────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │LOW                      2023-04-12││NORMAL                   2023-04-12│   ",
+      "   │Here is a low one                  ││Here is a normal one               │   ",
+      "   │Some lowly description             ││Some description                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │IMPORTANT                2023-04-12││URGENT                   2023-04-12│   ",
+      "   │Here is an Important issue         ││An urgent issue with no descript...│   ",
+      "   │Short description                  ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
+  test("empty-board-basic"):
+    val state = ContextState(
+      boards = Map("empty" -> BoardState.fromData(Vector.empty)),
+      activeContext = "empty"
+    )
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, state, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ empty                                                                  │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-0────────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
+  test("empty-board-stay-0"):
+    val state = ContextState(
+      boards = Map("empty" -> BoardState.fromData(Vector.empty)),
+      activeContext = "empty"
+    )
+    // Calling next here shouldn't change the 0 after TODOs
+    state.next()
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, state, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ empty                                                                  │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-0────────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
       "   │                                   ││                                   │   ",
       "   │                                   ││                                   │   ",
       "   │                                   ││                                   │   ",
