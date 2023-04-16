@@ -159,11 +159,7 @@ object ui:
         block = Some(
           BlockWidget(
             borders = Borders.ALL,
-            title = Some(inProgressBorderTitle),
-            border_style =
-              if state.focusedList == Status.INPROGRESS then
-                Style.DEFAULT.fg(Color.Yellow)
-              else Style.DEFAULT
+            title = Some(inProgressBorderTitle)
           )
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
