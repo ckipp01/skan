@@ -138,6 +138,53 @@ class uiSuite extends munit.FunSuite:
     )
     assertBuffer(backend, expected)
 
+  test("basic-board-progress-single"):
+    val fresh = ContextState(
+      boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
+      activeContext = "a"
+    )
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    fresh.progress()
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, fresh, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a                                                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-0────────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │                                   ││NORMAL                   2023-04-12│   ",
+      "   │                                   ││Here is a normal one               │   ",
+      "   │                                   ││Some description                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
   test("empty-board-basic"):
     val state = ContextState(
       boards = Map("empty" -> BoardState.fromData(Vector.empty)),

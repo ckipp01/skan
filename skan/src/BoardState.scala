@@ -75,13 +75,17 @@ final case class BoardState(
         val newlySelected = todoState.selected match
           case None => if todoItems().isEmpty then None else Some(0)
           case Some(i) =>
-            if i == 0 then Some(todoItems().length - 1) else Some(i - 1)
+            if todoItems().isEmpty then None
+            else if i == 0 then Some(todoItems().length - 1)
+            else Some(i - 1)
         todoState.select(newlySelected)
       case Status.INPROGRESS =>
         val newlySelected = inProgressState.selected match
           case None => if inProgressItems().isEmpty then None else Some(0)
           case Some(i) =>
-            if i == 0 then Some(inProgressItems().length - 1) else Some(i - 1)
+            if inProgressItems().isEmpty then None
+            else if i == 0 then Some(inProgressItems().length - 1)
+            else Some(i - 1)
         inProgressState.select(newlySelected)
       case _ => ()
 
@@ -93,16 +97,22 @@ final case class BoardState(
         todoState.selected match
           case None => ()
           case Some(selectedIndex) =>
-            val mainIndex = items.indexOf(todoItems()(selectedIndex))
+            val todos = todoItems()
+            val mainIndex = items.indexOf(todos(selectedIndex))
             items(mainIndex) =
               items(mainIndex).copy(status = items(mainIndex).status.progress())
+            // We special case this to make sure that if a user progresses an
+            // item at the bottom of the list, we move the selected up.
+            if selectedIndex + 1 == todos.length then previous() else ()
       case Status.INPROGRESS =>
         inProgressState.selected match
           case None => ()
           case Some(selectedIndex) =>
-            val mainIndex = items.indexOf(inProgressItems()(selectedIndex))
+            val inProgress = inProgressItems()
+            val mainIndex = items.indexOf(inProgress(selectedIndex))
             items(mainIndex) =
               items(mainIndex).copy(status = items(mainIndex).status.progress())
+            if selectedIndex + 1 == inProgress.length then previous() else ()
       case _ => ()
 
   /** Delete the current focused item.

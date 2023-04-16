@@ -1,7 +1,9 @@
 package skan
 
 /** The top level state of the application containing all of the various
-  * contexts.
+  * contexts. For most operations that have to do with the selected board this
+  * just acts as a facilators and calls the correct operation on the the correct
+  * board.
   *
   * @param boards
   *   The boards contained in the state, aka all the contexts and their name.
