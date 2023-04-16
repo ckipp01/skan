@@ -155,7 +155,7 @@ class uiSuite extends munit.FunSuite:
       "   ┌Priority────────────────────────────────────────────────────────────────┐   ",
       "   │ LOW │ NORMAL │ IMPORTANT │ URGENT                                      │   ",
       "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ENTER (next) | ESC(stop editing)                                             ",
+      "   ENTER (next) | ESC (stop editing)                                            ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",

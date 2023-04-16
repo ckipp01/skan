@@ -112,9 +112,17 @@ object ui:
     val todoBorderTitle =
       if state.focusedList == Status.TODO then
         state.todoState.selected match
-          case Some(index) => s"TODOs-${index + 1}/${todoItems.size}"
-          case None        => s"TODOs-${todoItems.size}"
-      else "TODOs"
+          case Some(index) =>
+            Spans.styled(
+              s"TODOs-${index + 1}/${todoItems.size}",
+              Style.DEFAULT.fg(Color.Yellow)
+            )
+          case None =>
+            Spans.styled(
+              s"TODOs-${todoItems.size}",
+              Style.DEFAULT.fg(Color.Yellow)
+            )
+      else Spans.nostyle("TODOs")
 
     frame.render_stateful_widget(
       MyListWidget(
@@ -122,7 +130,7 @@ object ui:
         block = Some(
           BlockWidget(
             borders = Borders.ALL,
-            title = Some(Spans.nostyle(todoBorderTitle))
+            title = Some(todoBorderTitle)
           )
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
@@ -134,9 +142,16 @@ object ui:
       if state.focusedList == Status.INPROGRESS then
         state.inProgressState.selected match
           case Some(index) =>
-            s"In Progress-${index + 1}/${inProgressItems.size}"
-          case None => s"In Progress-${inProgressItems.size}"
-      else "In Progress"
+            Spans.styled(
+              s"In Progress-${index + 1}/${inProgressItems.size}",
+              Style.DEFAULT.fg(Color.Yellow)
+            )
+          case None =>
+            Spans.styled(
+              s"In Progress-${inProgressItems.size}",
+              Style.DEFAULT.fg(Color.Yellow)
+            )
+      else Spans.nostyle("In Progress")
 
     frame.render_stateful_widget(
       MyListWidget(
@@ -144,7 +159,11 @@ object ui:
         block = Some(
           BlockWidget(
             borders = Borders.ALL,
-            title = Some(Spans.nostyle(inProgressBorderTitle))
+            title = Some(inProgressBorderTitle),
+            border_style =
+              if state.focusedList == Status.INPROGRESS then
+                Style.DEFAULT.fg(Color.Yellow)
+              else Style.DEFAULT
           )
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
@@ -270,7 +289,7 @@ object ui:
               Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
               Span.styled("(next)", Style(add_modifier = Modifier.DIM)),
               Span.nostyle(" | "),
-              Span.styled("ESC", Style(add_modifier = Modifier.BOLD)),
+              Span.styled("ESC ", Style(add_modifier = Modifier.BOLD)),
               Span.nostyle("(stop editing)")
             )
       case InputSection.Priority =>
