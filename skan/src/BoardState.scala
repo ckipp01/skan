@@ -14,15 +14,15 @@ package skan
 final case class BoardState(
     todoState: MyListWidget.State,
     inProgressState: MyListWidget.State,
-    items: Array[DataItem],
+    items: Array[BoardItem],
     focusedList: Status
 ):
 
-  def todoItems(): Array[DataItem] = items.collect:
-    case item @ DataItem(_, _, _, Status.TODO, _) => item
+  def todoItems(): Array[BoardItem] = items.collect:
+    case item @ BoardItem(_, _, _, Status.TODO, _) => item
 
-  def inProgressItems(): Array[DataItem] = items.collect:
-    case item @ DataItem(_, _, _, Status.INPROGRESS, _) => item
+  def inProgressItems(): Array[BoardItem] = items.collect:
+    case item @ BoardItem(_, _, _, Status.INPROGRESS, _) => item
 
   /** Switches the main column view in the board UI. The progression goes:
     *
@@ -125,7 +125,7 @@ final case class BoardState(
     * @return
     *   THe new state.
     */
-  def withNewItem(dataItem: DataItem): BoardState =
+  def withNewItem(dataItem: BoardItem): BoardState =
     this.copy(items = items.appended(dataItem))
 end BoardState
 
@@ -138,7 +138,7 @@ object BoardState:
     * @return
     *   The newly created state.
     */
-  def fromData(items: Vector[DataItem]): BoardState =
+  def fromData(items: Vector[BoardItem]): BoardState =
     BoardState(
       todoState =
         MyListWidget.State(selected = if items.size > 0 then Some(0) else None),
