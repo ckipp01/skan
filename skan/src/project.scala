@@ -119,7 +119,7 @@ import tui.crossterm.KeyCode
                   run(contextState)
                 else
                   val newState = contextState.withNewItem(
-                    DataItem.fromInput(
+                    BoardItem.fromInput(
                       state.title,
                       state.description,
                       state.priority

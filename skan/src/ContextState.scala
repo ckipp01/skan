@@ -66,7 +66,7 @@ case class ContextState(
     * @return
     *   The new state.
     */
-  def withNewItem(item: DataItem) =
+  def withNewItem(item: BoardItem) =
     val newBoardState = boards(activeContext).withNewItem(item)
     this.copy(boards = boards.updated(activeContext, newBoardState))
 
@@ -108,7 +108,7 @@ object ContextState:
       else ContextState(boards, boards.keys.toVector.sorted.head)
     else default(config.dataDir)
 
-  private def toJson(items: Array[DataItem]): String =
+  private def toJson(items: Array[BoardItem]): String =
     upickle.default.write(items)
 
   private def default(dir: os.Path) =
@@ -120,6 +120,6 @@ object ContextState:
     ContextState(Map("default" -> BoardState.fromData(Vector.empty)), "default")
 
   private def fromJson(json: String) =
-    upickle.default.read[Vector[DataItem]](json)
+    upickle.default.read[Vector[BoardItem]](json)
 
 end ContextState

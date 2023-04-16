@@ -48,7 +48,7 @@ object ui:
     )
     frame.render_widget(tabs, verticalChunk(0))
 
-    def toListItem(item: DataItem, maxWidth: Int) =
+    def toListItem(item: BoardItem, maxWidth: Int) =
       val priorityStyle = item.priority match
         case Priority.LOW       => Style(fg = Some(Color.LightBlue))
         case Priority.NORMAL    => Style(fg = Some(Color.Blue))

@@ -16,7 +16,7 @@ import java.time.Instant
   * @param priority
   *   The priority level of the item
   */
-final case class DataItem(
+final case class BoardItem(
     date: Instant,
     title: String,
     description: String,
@@ -24,7 +24,7 @@ final case class DataItem(
     priority: Priority
 ) derives ReadWriter
 
-object DataItem:
+object BoardItem:
   given ReadWriter[Instant] = upickle.default
     .readwriter[String]
     .bimap[Instant](
@@ -45,8 +45,8 @@ object DataItem:
       title: String,
       description: String,
       priority: Priority
-  ): DataItem =
-    DataItem(Instant.now(), title, description, Status.TODO, priority)
+  ): BoardItem =
+    BoardItem(Instant.now(), title, description, Status.TODO, priority)
 
 /** The various states that a DataItem can be in.
   */

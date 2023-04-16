@@ -68,7 +68,7 @@ class BoardStateSuite extends munit.FunSuite:
     val boardState = BoardState.fromData(defaultItems)
     assertEquals(boardState.items.size, 5)
     val newState = boardState.withNewItem(
-      DataItem(
+      BoardItem(
         Instant.now(),
         "title",
         "description",
