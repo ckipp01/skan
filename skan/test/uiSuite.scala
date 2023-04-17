@@ -289,6 +289,101 @@ class uiSuite extends munit.FunSuite:
     )
     assertBuffer(backend, expected)
 
+  test("basic-board-delete"):
+    val state = ContextState(
+      boards = Map("a" -> BoardState.fromData(defaultItems)),
+      activeContext = "a"
+    )
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    val newState = state.delete()
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, newState, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a                                                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-1/2──────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │LOW                      2023-04-12││URGENT                   2023-04-12│   ",
+      "   │Here is a low one                  ││An urgent issue with no descript...│   ",
+      "   │Some lowly description             ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │IMPORTANT                2023-04-12││                                   │   ",
+      "   │Here is an Important issue         ││                                   │   ",
+      "   │Short description                  ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
+  test("basic-board-delete-single"):
+    val state = ContextState(
+      boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
+      activeContext = "a"
+    )
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    val first = state.delete()
+    val second = first.delete()
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, second, config)
+
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "   ┌Contexts────────────────────────────────────────────────────────────────┐   ",
+      "   │ a                                                                      │   ",
+      "   └────────────────────────────────────────────────────────────────────────┘   ",
+      "   ┌TODOs-0────────────────────────────┐┌In Progress────────────────────────┐   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   │                                   ││                                   │   ",
+      "   └───────────────────────────────────┘└───────────────────────────────────┘   ",
+      "   j (down) | k (up) | h (left) | l (right) | ENTER (progress) | n (new) | q    ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    assertBuffer(backend, expected)
+
   test("basic-input-normal"):
     val backend = TestBackend(80, 25)
     val terminal = Terminal.init(backend)

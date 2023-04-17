@@ -126,14 +126,29 @@ final case class BoardState(
         todoState.selected match
           case None => this
           case Some(selectedIndex) =>
-            val mainIndex = items.indexOf(todoItems()(selectedIndex))
-            this.copy(items = items.filterNot(_ == items(mainIndex)))
+            val todos = todoItems()
+            if todos.isEmpty then this
+            else
+              val mainIndex = items.indexOf(todos(selectedIndex))
+              val newState =
+                this.copy(items = items.filterNot(_ == items(mainIndex)))
+              if selectedIndex + 1 >= todos.length - 1 then newState.previous()
+              else ()
+              newState
       case Status.INPROGRESS =>
         inProgressState.selected match
           case None => this
           case Some(selectedIndex) =>
-            val mainIndex = items.indexOf(inProgressItems()(selectedIndex))
-            this.copy(items = items.filterNot(_ == items(mainIndex)))
+            val inProgress = inProgressItems()
+            if inProgress.isEmpty then this
+            else
+              val mainIndex = items.indexOf(inProgress(selectedIndex))
+              val newState =
+                this.copy(items = items.filterNot(_ == items(mainIndex)))
+              if selectedIndex + 1 >= inProgress.length - 1 then
+                newState.previous()
+              else ()
+              newState
       case _ => this
 
   /** Add a new item to the items in this state.
