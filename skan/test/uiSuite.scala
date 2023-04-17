@@ -14,11 +14,6 @@ class uiSuite extends munit.FunSuite:
       ),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -52,7 +47,7 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(state, expected, config)
 
   test("basic-board-in-progress"):
     val state = ContextState(
@@ -62,12 +57,7 @@ class uiSuite extends munit.FunSuite:
       ),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
     val switched = state.switchColumn()
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, switched, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -101,20 +91,15 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(switched, expected, config)
 
   test("basic-board-progress"):
     val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems)),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
 
     state.progress()
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -148,20 +133,14 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(state, expected, config)
 
   test("basic-board-progress-single"):
     val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
     state.progress()
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -195,18 +174,13 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(state, expected, config)
 
   test("empty-board-basic"):
     val state = ContextState(
       boards = Map("empty" -> BoardState.fromData(Vector.empty)),
       activeContext = "empty"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -240,7 +214,7 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(state, expected, config)
 
   test("empty-board-stay-0"):
     val state = ContextState(
@@ -249,12 +223,6 @@ class uiSuite extends munit.FunSuite:
     )
     // Calling next here shouldn't change the 0 after TODOs
     state.next()
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
-
     val expected = Buffer.with_lines(
       "                                                                                ",
       "                                                                                ",
@@ -287,20 +255,14 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(state, expected, config)
 
   test("basic-board-delete"):
     val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems)),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
     val newState = state.delete()
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, newState, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -334,21 +296,15 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(newState, expected, config)
 
   test("basic-board-delete-single"):
     val state = ContextState(
       boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
-
     val first = state.delete()
     val second = first.delete()
-
-    terminal.draw: frame =>
-      ui.renderBoard(frame, second, config)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -382,16 +338,10 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkUi(second, expected, config)
 
   test("basic-input-normal"):
-    val backend = TestBackend(80, 25)
-    val terminal = Terminal.init(backend)
     val inputState = InputState.fresh()
-
-    terminal.draw: frame =>
-      ui.renderInput(frame, inputState)
-
     val expected = Buffer.with_lines(
       "                                                                                ",
       "                                                                                ",
@@ -419,11 +369,9 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
-    assertBuffer(backend, expected)
+    checkInputUi(inputState, expected)
 
   test("basic-input-filled"):
-    val backend = TestBackend(80, 25)
-    val terminal = Terminal.init(backend)
     val inputState = InputState
       .fresh()
       .copy(
@@ -431,9 +379,6 @@ class uiSuite extends munit.FunSuite:
         description = "Some description",
         inputMode = InputMode.Input
       )
-
-    terminal.draw: frame =>
-      ui.renderInput(frame, inputState)
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -462,6 +407,24 @@ class uiSuite extends munit.FunSuite:
       "                                                                                ",
       "                                                                                "
     )
+    checkInputUi(inputState, expected)
+
+  def checkUi(state: ContextState, expected: Buffer, config: Config) =
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      ui.renderBoard(frame, state, config)
+
+    assertBuffer(backend, expected)
+
+  def checkInputUi(state: InputState, expected: Buffer) =
+    val backend = TestBackend(80, 25)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      ui.renderInput(frame, state)
+
     assertBuffer(backend, expected)
 
 end uiSuite
