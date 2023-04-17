@@ -3,7 +3,8 @@ package skan
 import java.time.Instant
 
 /** Basically set up what we need for testing. We start with 5 items, write them
-  * to disk in a tmp file, then load them back up to create our initial Data.
+  * to disk in a tmp context files, and then load them back up to create our
+  * initial ContextState.
   */
 object testData:
   val defaultItems = Vector(
@@ -72,8 +73,8 @@ object testData:
 
   private val preContext = ContextState(
     Map(
-      "a" -> BoardState.fromData(defaultItems),
-      "b" -> BoardState.fromData(secondaryItems)
+      "a" -> BoardState.fromItems(defaultItems),
+      "b" -> BoardState.fromItems(secondaryItems)
     ),
     activeContext = "a"
   )

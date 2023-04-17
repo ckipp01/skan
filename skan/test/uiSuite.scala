@@ -9,8 +9,8 @@ class uiSuite extends munit.FunSuite:
   test("basic-board-todo"):
     val state = ContextState(
       boards = Map(
-        "a" -> BoardState.fromData(defaultItems),
-        "b" -> BoardState.fromData(secondaryItems)
+        "a" -> BoardState.fromItems(defaultItems),
+        "b" -> BoardState.fromItems(secondaryItems)
       ),
       activeContext = "a"
     )
@@ -52,8 +52,8 @@ class uiSuite extends munit.FunSuite:
   test("basic-board-in-progress"):
     val state = ContextState(
       boards = Map(
-        "a" -> BoardState.fromData(defaultItems),
-        "b" -> BoardState.fromData(secondaryItems)
+        "a" -> BoardState.fromItems(defaultItems),
+        "b" -> BoardState.fromItems(secondaryItems)
       ),
       activeContext = "a"
     )
@@ -95,7 +95,7 @@ class uiSuite extends munit.FunSuite:
 
   test("basic-board-progress"):
     val state = ContextState(
-      boards = Map("a" -> BoardState.fromData(defaultItems)),
+      boards = Map("a" -> BoardState.fromItems(defaultItems)),
       activeContext = "a"
     )
 
@@ -137,7 +137,7 @@ class uiSuite extends munit.FunSuite:
 
   test("basic-board-progress-single"):
     val state = ContextState(
-      boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
+      boards = Map("a" -> BoardState.fromItems(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
     state.progress()
@@ -178,7 +178,7 @@ class uiSuite extends munit.FunSuite:
 
   test("empty-board-basic"):
     val state = ContextState(
-      boards = Map("empty" -> BoardState.fromData(Vector.empty)),
+      boards = Map("empty" -> BoardState.fromItems(Vector.empty)),
       activeContext = "empty"
     )
 
@@ -218,7 +218,7 @@ class uiSuite extends munit.FunSuite:
 
   test("empty-board-stay-0"):
     val state = ContextState(
-      boards = Map("empty" -> BoardState.fromData(Vector.empty)),
+      boards = Map("empty" -> BoardState.fromItems(Vector.empty)),
       activeContext = "empty"
     )
     // Calling next here shouldn't change the 0 after TODOs
@@ -259,7 +259,7 @@ class uiSuite extends munit.FunSuite:
 
   test("basic-board-delete"):
     val state = ContextState(
-      boards = Map("a" -> BoardState.fromData(defaultItems)),
+      boards = Map("a" -> BoardState.fromItems(defaultItems)),
       activeContext = "a"
     )
     val newState = state.delete()
@@ -300,7 +300,7 @@ class uiSuite extends munit.FunSuite:
 
   test("basic-board-delete-single"):
     val state = ContextState(
-      boards = Map("a" -> BoardState.fromData(defaultItems.slice(0, 1))),
+      boards = Map("a" -> BoardState.fromItems(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
     val first = state.delete()

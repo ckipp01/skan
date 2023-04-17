@@ -153,13 +153,13 @@ final case class BoardState(
 
   /** Add a new item to the items in this state.
     *
-    * @param dataItem
-    *   The DataItem to add.
+    * @param item
+    *   The BoardItem to add.
     * @return
-    *   THe new state.
+    *   The new state.
     */
-  def withNewItem(dataItem: BoardItem): BoardState =
-    this.copy(items = items.appended(dataItem))
+  def withNewItem(item: BoardItem): BoardState =
+    this.copy(items = items.appended(item))
 end BoardState
 
 object BoardState:
@@ -171,7 +171,7 @@ object BoardState:
     * @return
     *   The newly created state.
     */
-  def fromData(items: Vector[BoardItem]): BoardState =
+  def fromItems(items: Vector[BoardItem]): BoardState =
     BoardState(
       todoState =
         MyListWidget.State(selected = if items.size > 0 then Some(0) else None),
