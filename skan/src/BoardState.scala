@@ -115,6 +115,32 @@ final case class BoardState(
             if selectedIndex + 1 == inProgress.length then previous() else ()
       case _ => ()
 
+  // TODO this and the above can probably be refactored to be a shared method.
+  // The only thing that differs is the call to progress or moveBack.
+  /** Move the current item back on the board.
+    */
+  def moveBack(): Unit =
+    focusedList match
+      case Status.TODO =>
+        todoState.selected match
+          case None => ()
+          case Some(selectedIndex) =>
+            val todos = todoItems()
+            val mainIndex = items.indexOf(todos(selectedIndex))
+            items(mainIndex) =
+              items(mainIndex).copy(status = items(mainIndex).status.moveBack())
+            if selectedIndex + 1 == todos.length then previous() else ()
+      case Status.INPROGRESS =>
+        inProgressState.selected match
+          case None => ()
+          case Some(selectedIndex) =>
+            val inProgress = inProgressItems()
+            val mainIndex = items.indexOf(inProgress(selectedIndex))
+            items(mainIndex) =
+              items(mainIndex).copy(status = items(mainIndex).status.moveBack())
+            if selectedIndex + 1 == inProgress.length then previous() else ()
+      case _ => ()
+
   /** Delete the current focused item.
     *
     * @return
@@ -153,13 +179,13 @@ final case class BoardState(
 
   /** Add a new item to the items in this state.
     *
-    * @param dataItem
-    *   The DataItem to add.
+    * @param item
+    *   The BoardItem to add.
     * @return
-    *   THe new state.
+    *   The new state.
     */
-  def withNewItem(dataItem: BoardItem): BoardState =
-    this.copy(items = items.appended(dataItem))
+  def withNewItem(item: BoardItem): BoardState =
+    this.copy(items = items.appended(item))
 end BoardState
 
 object BoardState:
@@ -171,7 +197,7 @@ object BoardState:
     * @return
     *   The newly created state.
     */
-  def fromData(items: Vector[BoardItem]): BoardState =
+  def fromItems(items: Vector[BoardItem]): BoardState =
     BoardState(
       todoState =
         MyListWidget.State(selected = if items.size > 0 then Some(0) else None),

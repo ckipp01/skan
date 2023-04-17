@@ -39,11 +39,15 @@ import tui.crossterm.KeyCode
           case _: KeyCode.Enter =>
             state.progress()
             run(state)
+          case _: KeyCode.Backspace =>
+            state.moveBack()
+            run(state)
           case _: KeyCode.Tab =>
             val newState = state.switchContext()
             run(newState)
           case _ => run(state)
       case _ => run(state)
+  end run
 
   def runInput(contextState: ContextState, state: InputState): Unit =
     def handleNormalMode(keyCode: KeyCode) =

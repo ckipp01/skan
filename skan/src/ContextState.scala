@@ -61,6 +61,11 @@ case class ContextState(
   def progress(): Unit =
     boards(activeContext).progress()
 
+  /** Move back the current item on the current board.
+    */
+  def moveBack(): Unit =
+    boards(activeContext).moveBack()
+
   /** Create a new item on the current selected board.
     *
     * @param item
@@ -85,13 +90,13 @@ case class ContextState(
 end ContextState
 
 object ContextState:
-  /** Given a config, load the data from the datafile location. If no file is
-    * found, one will be created.
+  /** Given a config, load the contexts from the dataDir location. If the dir is
+    * doesn't exist or there are no contexts, one will be created.
     *
     * @param config
-    *   The Config holding the datafile location.
+    *   The Config holding the dataDir location.
     * @return
-    *   Data will the loaded items or a new Data with no items.
+    *   The ContextState
     */
   def fromConfig(config: Config): ContextState =
     if os.exists(config.dataDir) then
@@ -104,7 +109,7 @@ object ContextState:
           val contents = os.read(file)
           val items = fromJson(contents)
           val name = file.baseName
-          (name, BoardState.fromData(items))
+          (name, BoardState.fromItems(items))
         .toMap
       if boards.isEmpty then default(config.dataDir)
       else ContextState(boards, boards.keys.toVector.sorted.head)
@@ -119,7 +124,10 @@ object ContextState:
       data = "",
       createFolders = true
     )
-    ContextState(Map("default" -> BoardState.fromData(Vector.empty)), "default")
+    ContextState(
+      Map("default" -> BoardState.fromItems(Vector.empty)),
+      "default"
+    )
 
   private def fromJson(json: String) =
     upickle.default.read[Vector[BoardItem]](json)
