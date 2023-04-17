@@ -17,7 +17,7 @@ import tui.crossterm.KeyCode
   val contextState = ContextState.fromConfig(config)
 
   def run(state: ContextState): Unit =
-    terminal.draw(f => ui.renderBoard(f, state, config))
+    terminal.draw(f => ui.board.render(f, state, config))
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match
@@ -83,7 +83,7 @@ import tui.crossterm.KeyCode
 
         case _ => runInput(contextState, state)
 
-    terminal.draw(f => ui.renderInput(f, state))
+    terminal.draw(f => ui.newItem.render(f, state))
 
     jni.read() match
       case key: Event.Key =>

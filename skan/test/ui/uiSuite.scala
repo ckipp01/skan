@@ -1,7 +1,9 @@
-package skan
+package skan.ui
+
+import skan.*
+import skan.testData.*
 
 import tui.*
-import testData.*
 import util.*
 
 class uiSuite extends munit.FunSuite:
@@ -457,7 +459,7 @@ class uiSuite extends munit.FunSuite:
     val terminal = Terminal.init(backend)
 
     terminal.draw: frame =>
-      ui.renderBoard(frame, state, config)
+      ui.board.render(frame, state, config)
 
     assertBuffer(backend, expected)
 
@@ -466,7 +468,7 @@ class uiSuite extends munit.FunSuite:
     val terminal = Terminal.init(backend)
 
     terminal.draw: frame =>
-      ui.renderInput(frame, state)
+      ui.newItem.render(frame, state)
 
     assertBuffer(backend, expected)
 

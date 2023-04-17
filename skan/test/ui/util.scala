@@ -1,4 +1,4 @@
-package skan
+package skan.ui
 
 import munit.Assertions.*
 import tui.*
