@@ -4,6 +4,7 @@ import tui.*
 import tui.widgets.BlockWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
+import tui.widgets.ParagraphWidget.Wrap
 
 object ui:
   def renderBoard(
@@ -20,7 +21,7 @@ object ui:
         Constraint.Percentage(80),
         Constraint.Length(3)
       ),
-      margin = Margin(3)
+      margin = Margin(2)
     ).split(frame.size)
 
     val horizontalChunks = Layout(
@@ -169,19 +170,22 @@ object ui:
 
     val msg = Text.from(
       Span.styled("j ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(down)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("(↓)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("k ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(up)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("(↑)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("h ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(left)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("(←)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("l ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(right)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("(→)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
       Span.styled("(progress)", Style(add_modifier = Modifier.DIM)),
+      Span.nostyle(" | "),
+      Span.styled("BACKSPACE ", Style(add_modifier = Modifier.BOLD)),
+      Span.styled("(move back)", Style(add_modifier = Modifier.DIM)),
       Span.nostyle(" | "),
       Span.styled("n ", Style(add_modifier = Modifier.BOLD)),
       Span.styled("(new)", Style(add_modifier = Modifier.DIM)),
@@ -193,7 +197,9 @@ object ui:
       Span.styled("(delete)", Style(add_modifier = Modifier.DIM))
     )
 
-    val helpMessage = ParagraphWidget(text = msg)
+    val helpMessage =
+      ParagraphWidget(text = msg, wrap = Some(Wrap(trim = true)))
+
     frame.render_widget(helpMessage, verticalChunk(2))
   end renderBoard
 

@@ -63,6 +63,18 @@ enum Status derives ReadWriter:
     case DONE    => DONE
     case BLOCKED => BLOCKED
 
+  /** Move the current status back.
+    *
+    * @return
+    *   THe new Status
+    */
+  def moveBack(): Status = this match
+    // Can't move something back from TODO
+    case TODO       => TODO
+    case INPROGRESS => TODO
+    case BLOCKED    => INPROGRESS
+    case DONE       => INPROGRESS
+
   case TODO, INPROGRESS, BLOCKED, DONE
 
 enum Priority derives ReadWriter:

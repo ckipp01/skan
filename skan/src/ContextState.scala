@@ -61,6 +61,11 @@ case class ContextState(
   def progress(): Unit =
     boards(activeContext).progress()
 
+  /** Move back the current item on the current board.
+    */
+  def moveBack(): Unit =
+    boards(activeContext).moveBack()
+
   /** Create a new item on the current selected board.
     *
     * @param item
