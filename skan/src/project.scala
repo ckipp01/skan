@@ -1,4 +1,4 @@
-//> using scala "3.3.1-RC1-bin-20230411-d577300-NIGHTLY"
+//> using scala "3.nightly"
 //> using lib "com.olvind.tui::tui:0.0.5"
 //> using lib "com.lihaoyi::upickle:3.1.0"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
@@ -12,78 +12,178 @@ import tui.*
 import tui.crossterm.Event
 import tui.crossterm.KeyCode
 
+import skan.ui.*
+
 @main def run(): Unit = withTerminal: (jni, terminal) =>
   val config = Config.load()
   val contextState = ContextState.fromConfig(config)
 
-  def run(state: ContextState): Unit =
-    terminal.draw(f => ui.renderBoard(f, state, config))
+  def runBoard(state: ContextState): Unit =
+    terminal.draw(frame => Board.render(frame, state, config))
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match
           case char: KeyCode.Char if char.c() == 'q' => state.save(config)
           case char: KeyCode.Char if char.c() == 'k' =>
             state.previous()
-            run(state)
+            runBoard(state)
           case char: KeyCode.Char if char.c() == 'j' =>
             state.next()
-            run(state)
+            runBoard(state)
           case char: KeyCode.Char if char.c() == 'l' || char.c() == 'h' =>
             val newState = state.switchColumn()
-            run(newState)
+            runBoard(newState)
           case char: KeyCode.Char if char.c() == 'n' =>
-            runInput(state, InputState.fresh())
+            runNewItem(state, NewItemState.fresh())
           case char: KeyCode.Char if char.c() == 'x' =>
-            val newState = state.delete()
-            run(newState)
+            val newState = state.deleteItem()
+            runBoard(newState)
+          case char: KeyCode.Char if char.c() == 'c' =>
+            runContextMenu(state, MyListWidget.State(selected = Some(0)))
           case _: KeyCode.Enter =>
             state.progress()
-            run(state)
+            runBoard(state)
           case _: KeyCode.Backspace =>
             state.moveBack()
-            run(state)
+            runBoard(state)
           case _: KeyCode.Tab =>
             val newState = state.switchContext()
-            run(newState)
-          case _ => run(state)
-      case _ => run(state)
-  end run
+            runBoard(newState)
+          case _ => runBoard(state)
+      case _ => runBoard(state)
+    end match
+  end runBoard
 
-  def runInput(contextState: ContextState, state: InputState): Unit =
+  def runContextMenu(
+      contextState: ContextState,
+      menuState: MyListWidget.State
+  ): Unit =
+    terminal.draw(frame => ContextMenu.render(frame, contextState, menuState))
+    jni.read() match
+      case key: Event.Key =>
+        key.keyEvent().code() match
+          case char: KeyCode.Char if char.c() == 'j' =>
+            val index = menuState.selected.getOrElse(0)
+            val selected =
+              if index >= ContextAction.values.size - 1 then 0
+              else index + 1
+            menuState.selected = Some(selected)
+            runContextMenu(contextState, menuState)
+          case char: KeyCode.Char if char.c() == 'k' =>
+            val index = menuState.selected.getOrElse(0)
+            val selected =
+              if index == 0 then ContextAction.values.size - 1
+              else index - 1
+            menuState.selected = Some(selected)
+            runContextMenu(contextState, menuState)
+          case char: KeyCode.Char if char.c() == 'q' =>
+            runBoard(contextState)
+          case _: KeyCode.Enter =>
+            if menuState.selected.isEmpty then runBoard(contextState)
+            else
+              ContextAction.fromOrdinal(menuState.selected.get) match
+                case ContextAction.EditCurrentContext =>
+                  runEditContext(contextState, contextState.activeContext)
+                case ContextAction.DeleteCurrentContext =>
+                  val newState = contextState.deleteContext(config)
+                  runBoard(newState)
+                case ContextAction.CreateNewContext =>
+                  runNewContext(contextState, newContextName = "")
+          case _ => runContextMenu(contextState, menuState)
+      case _ => runContextMenu(contextState, menuState)
+    end match
+  end runContextMenu
+
+  def runEditContext(contextState: ContextState, newContextName: String): Unit =
+    terminal.draw(frame =>
+      EditContext.render(frame, contextState, newContextName)
+    )
+    jni.read() match
+      case key: Event.Key =>
+        key.keyEvent().code() match
+          case c: KeyCode.Char =>
+            val newText = newContextName + c.c()
+            runEditContext(contextState, newText)
+          case _: KeyCode.Backspace =>
+            if newContextName.isEmpty() then
+              runEditContext(contextState, newContextName)
+            else
+              val newText =
+                newContextName.substring(0, newContextName.length - 1)
+              runEditContext(contextState, newText)
+          case _: KeyCode.Enter =>
+            if newContextName.nonEmpty then
+              val newState = contextState.renameContext(newContextName, config)
+              runBoard(newState)
+            else runBoard(contextState)
+          case _: KeyCode.Esc =>
+            runBoard(contextState)
+          case _ => runEditContext(contextState, newContextName)
+      case _ => runEditContext(contextState, newContextName)
+
+  // TODO this and runEditContext can be refactored just to be a single method that takes an Enter function
+  def runNewContext(contextState: ContextState, newContextName: String): Unit =
+    terminal.draw(frame =>
+      EditContext.render(frame, contextState, newContextName)
+    )
+    jni.read() match
+      case key: Event.Key =>
+        key.keyEvent().code() match
+          case c: KeyCode.Char =>
+            val newText = newContextName + c.c()
+            runNewContext(contextState, newText)
+          case _: KeyCode.Backspace =>
+            if newContextName.isEmpty() then
+              runNewContext(contextState, newContextName)
+            else
+              val newText =
+                newContextName.substring(0, newContextName.length - 1)
+              runNewContext(contextState, newText)
+          case _: KeyCode.Enter =>
+            if newContextName.nonEmpty then
+              val newState = contextState.addContext(newContextName)
+              runBoard(newState)
+            else runBoard(contextState)
+          case _: KeyCode.Esc =>
+            runBoard(contextState)
+          case _ => runNewContext(contextState, newContextName)
+      case _ => runNewContext(contextState, newContextName)
+
+  def runNewItem(contextState: ContextState, state: NewItemState): Unit =
     def handleNormalMode(keyCode: KeyCode) =
       keyCode match
         case c: KeyCode.Char if c.c() == 'i' =>
           val newState = state.switchInputMode()
-          runInput(contextState, newState)
+          runNewItem(contextState, newState)
         case c: KeyCode.Char if c.c() == 'q' =>
-          run(contextState)
-        case _ => runInput(contextState, state)
+          runBoard(contextState)
+        case _ => runNewItem(contextState, state)
 
     def handleTextInput(
         keyCode: KeyCode,
-        char: (c: Char) => Unit,
+        char: Char => Unit,
         backSpace: () => Unit
     ) =
       keyCode match
         case _: KeyCode.Esc =>
           val newState = state.switchInputMode()
-          runInput(contextState, newState)
+          runNewItem(contextState, newState)
 
         case c: KeyCode.Char =>
           char(c.c())
-          runInput(contextState, state)
+          runNewItem(contextState, state)
 
         case c: KeyCode.Backspace =>
           backSpace()
-          runInput(contextState, state)
+          runNewItem(contextState, state)
 
         case _: KeyCode.Enter =>
           val newState = state.focusNext()
-          runInput(contextState, newState)
+          runNewItem(contextState, newState)
 
-        case _ => runInput(contextState, state)
+        case _ => runNewItem(contextState, state)
 
-    terminal.draw(f => ui.renderInput(f, state))
+    terminal.draw(f => NewItem.render(f, state))
 
     jni.read() match
       case key: Event.Key =>
@@ -120,7 +220,7 @@ import tui.crossterm.KeyCode
             key.keyEvent().code() match
               case _: KeyCode.Enter =>
                 if state.title.isEmpty() && state.description.isEmpty() then
-                  run(contextState)
+                  runBoard(contextState)
                 else
                   val newState = contextState.withNewItem(
                     BoardItem.fromInput(
@@ -129,16 +229,16 @@ import tui.crossterm.KeyCode
                       state.priority
                     )
                   )
-                  run(newState)
+                  runBoard(newState)
               case _: KeyCode.Tab =>
                 val newState = state.copy(priority = state.priority.shift())
-                runInput(contextState, newState)
+                runNewItem(contextState, newState)
               case c: KeyCode.Char if c.c() == 'q' =>
-                run(contextState)
-              case _ => runInput(contextState, state)
+                runBoard(contextState)
+              case _ => runNewItem(contextState, state)
 
-      case _ => runInput(contextState, state)
+      case _ => runNewItem(contextState, state)
     end match
-  end runInput
+  end runNewItem
 
-  run(contextState)
+  runBoard(contextState)

@@ -1,6 +1,6 @@
 package skan
 
-/** State pertaining to the input section.
+/** State pertaining to the new item input section.
   *
   * @param title
   *   The title of the item to be created
@@ -11,7 +11,7 @@ package skan
   * @param focusedInput
   *   Which inpt is currently focused
   */
-final case class InputState(
+final case class NewItemState(
     var title: String = "",
     var description: String = "",
     inputMode: InputMode = InputMode.Normal,
@@ -24,7 +24,7 @@ final case class InputState(
     * @return
     *   The new state.
     */
-  def switchInputMode(): InputState =
+  def switchInputMode(): NewItemState =
     val newMode = inputMode match
       case InputMode.Normal => InputMode.Input
       case InputMode.Input  => InputMode.Normal
@@ -35,23 +35,23 @@ final case class InputState(
     * @return
     *   The new state
     */
-  def focusNext(): InputState =
+  def focusNext(): NewItemState =
     val newFocus = focusedInput match
       case InputSection.Title       => InputSection.Description
       case InputSection.Description => InputSection.Priority
       case InputSection.Priority    => InputSection.Title
     this.copy(focusedInput = newFocus)
 
-end InputState
+end NewItemState
 
-object InputState:
+object NewItemState:
   /** A fresh InputState where essentiall everything is empty and the user is
     * focused on the title input.
     *
     * @return
     *   The fresh InputState
     */
-  def fresh(): InputState = InputState(focusedInput = InputSection.Title)
+  def fresh(): NewItemState = NewItemState(focusedInput = InputSection.Title)
 
 /** Represents the two states a user can be in during the Input view. Normal,
   * where they are just viewing, and Input where they are editing.

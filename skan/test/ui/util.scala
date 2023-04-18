@@ -1,8 +1,13 @@
-package skan
+package skan.ui
 
 import munit.Assertions.*
 import tui.*
 import tui.internal.saturating.*
+
+import skan.ContextState
+import skan.Config
+import skan.NewItemState
+import skan.MyListWidget
 
 import scala.collection.mutable
 
@@ -10,7 +15,51 @@ import scala.collection.mutable
   * Much of this is copied from https://github.com/oyvindberg/tui-scala and just
   * slightly adjusted for my use case.
   */
-object util:
+object Util:
+  def checkUi(state: ContextState, expected: Buffer, config: Config) =
+    val backend = TestBackend(80, 30)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      Board.render(frame, state, config)
+
+    assertBuffer(backend, expected)
+
+  def checkInputUi(state: NewItemState, expected: Buffer) =
+    val backend = TestBackend(80, 25)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      NewItem.render(frame, state)
+
+    assertBuffer(backend, expected)
+
+  def checkContextMenuUi(
+      contextState: ContextState,
+      menuState: MyListWidget.State,
+      expected: Buffer
+  ) =
+    val backend = TestBackend(80, 25)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      ContextMenu.render(frame, contextState, menuState)
+
+    assertBuffer(backend, expected)
+
+  def checkEditContextUi(
+      contextState: ContextState,
+      name: String,
+      expected: Buffer
+  ) =
+    val backend = TestBackend(80, 25)
+    val terminal = Terminal.init(backend)
+
+    terminal.draw: frame =>
+      EditContext.render(frame, contextState, name)
+
+    assertBuffer(backend, expected)
+
   /** This is just the diff method from:
     *
     * https://github.com/oyvindberg/tui-scala/blob/321f6f9009a0eb3de2a6cafdab91a53e8bc1dae6/tui/src/scala/tui/Buffer.scala#L199-L228
@@ -85,7 +134,7 @@ object util:
     debug_info.append(nice_diff)
     sys.error(debug_info.toString())
   end assertBuffer
-end util
+end Util
 
 /** Taken from
   * https://github.com/oyvindberg/tui-scala/blob/master/tests/src/scala/tui/bufferView.scala
