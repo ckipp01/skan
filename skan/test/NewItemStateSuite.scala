@@ -1,8 +1,8 @@
 package skan
 
-class InputStateSuite extends munit.FunSuite:
+class NewItemStateSuite extends munit.FunSuite:
   test("can-be-initialized"):
-    val state = InputState.fresh()
+    val state = NewItemState.fresh()
     assertEquals(state.title, "")
     assertEquals(state.description, "")
     assertEquals(state.inputMode, InputMode.Normal)
@@ -10,7 +10,7 @@ class InputStateSuite extends munit.FunSuite:
     assertEquals(state.focusedInput, InputSection.Title)
 
   test("can-switch-inputmode"):
-    val state = InputState.fresh()
+    val state = NewItemState.fresh()
     assertEquals(state.inputMode, InputMode.Normal)
     val swapped = state.switchInputMode()
     assertEquals(swapped.inputMode, InputMode.Input)
@@ -18,7 +18,7 @@ class InputStateSuite extends munit.FunSuite:
     assertEquals(backToNormal.inputMode, InputMode.Normal)
 
   test("can-focus-next"):
-    val state = InputState.fresh()
+    val state = NewItemState.fresh()
     assertEquals(state.focusedInput, InputSection.Title)
     val focusedDescription = state.focusNext()
     assertEquals(focusedDescription.focusedInput, InputSection.Description)

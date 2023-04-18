@@ -7,8 +7,8 @@ import tui.widgets.BlockWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
 
-object newItem:
-  def render(frame: Frame, state: InputState): Unit =
+object NewItem:
+  def render(frame: Frame, state: NewItemState): Unit =
     val chunks = Layout(
       direction = Direction.Vertical,
       margin = Margin(3),
@@ -114,4 +114,4 @@ object newItem:
     val helpMessage = ParagraphWidget(text = msg)
     frame.render_widget(helpMessage, chunks(3))
   end render
-end newItem
+end NewItem

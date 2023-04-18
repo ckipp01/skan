@@ -16,7 +16,7 @@ case class ContextState(
 ):
   /** All the board names in a sorted fashion.
     */
-  val sortedKeys = boards.keys.toVector.sorted
+  val sortedKeys: Vector[String] = boards.keys.toVector.sorted
 
   /** Save all of the contexts to disk.
     *
@@ -43,7 +43,7 @@ case class ContextState(
     * @return
     *   The new state.
     */
-  def delete(): ContextState =
+  def deleteItem(): ContextState =
     val newBoardState = boards(activeContext).delete()
     this.copy(boards = boards.updated(activeContext, newBoardState))
 
@@ -86,6 +86,50 @@ case class ContextState(
     val index = sortedKeys.indexOf(activeContext)
     val newIndex = if index + 1 >= sortedKeys.length then 0 else index + 1
     this.copy(activeContext = sortedKeys(newIndex))
+
+  /** Rename the current active context.
+    *
+    * @param newName
+    *   The new name of the context
+    * @param config
+    *   The app Config
+    * @return
+    *   The updated state
+    */
+  def renameContext(newName: String, config: Config): ContextState =
+    os.move(
+      config.dataDir / s"${activeContext}.json",
+      config.dataDir / s"${newName}.json"
+    )
+    val boardState = boards(activeContext)
+    this.copy(
+      boards = boards.removed(activeContext).updated(newName, boardState),
+      activeContext = newName
+    )
+
+  def addContext(name: String): ContextState =
+    this.copy(
+      boards = boards.updated(name, BoardState.fromItems(Vector.empty)),
+      activeContext = name
+    )
+
+  /** Deletes the current context. If this context is the last one a new default
+    * one will be created.
+    *
+    * @param config
+    *   The app config
+    * @return
+    *   The new state
+    */
+  def deleteContext(config: Config): ContextState =
+    os.remove(config.dataDir / s"${activeContext}.json")
+    val newBoards = boards.removed(activeContext)
+    if newBoards.isEmpty then ContextState.fromConfig(config)
+    else
+      this.copy(
+        boards = newBoards,
+        activeContext = newBoards.keys.toVector.sorted.head
+      )
 
 end ContextState
 
@@ -131,5 +175,4 @@ object ContextState:
 
   private def fromJson(json: String) =
     upickle.default.read[Vector[BoardItem]](json)
-
 end ContextState

@@ -8,7 +8,7 @@ import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
 import tui.widgets.ParagraphWidget.Wrap
 
-object board:
+object Board:
   def render(
       frame: Frame,
       contextState: ContextState,
@@ -204,4 +204,4 @@ object board:
 
     frame.render_widget(helpMessage, verticalChunk(2))
   end render
-end board
+end Board

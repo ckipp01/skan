@@ -4,10 +4,9 @@ import skan.*
 import skan.testData.*
 
 import tui.*
-import util.*
+import Util.*
 
-class uiSuite extends munit.FunSuite:
-
+class BoardUiSuite extends munit.FunSuite:
   test("basic-board-todo"):
     val state = ContextState(
       boards = Map(
@@ -307,7 +306,7 @@ class uiSuite extends munit.FunSuite:
       boards = Map("a" -> BoardState.fromItems(defaultItems)),
       activeContext = "a"
     )
-    val newState = state.delete()
+    val newState = state.deleteItem()
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -348,8 +347,8 @@ class uiSuite extends munit.FunSuite:
       boards = Map("a" -> BoardState.fromItems(defaultItems.slice(0, 1))),
       activeContext = "a"
     )
-    val first = state.delete()
-    val second = first.delete()
+    val first = state.deleteItem()
+    val second = first.deleteItem()
 
     val expected = Buffer.with_lines(
       "                                                                                ",
@@ -385,91 +384,135 @@ class uiSuite extends munit.FunSuite:
     )
     checkUi(second, expected, config)
 
-  test("basic-input-normal"):
-    val inputState = InputState.fresh()
-    val expected = Buffer.with_lines(
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "   ┌Title───────────────────────────────────────────────────────────────────┐   ",
-      "   │                                                                        │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ┌Description─────────────────────────────────────────────────────────────┐   ",
-      "   │                                                                        │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ┌Priority────────────────────────────────────────────────────────────────┐   ",
-      "   │ LOW │ NORMAL │ IMPORTANT │ URGENT                                      │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   i (edit) | q (exit)                                                          ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                "
+  test("add-context"):
+    val state = ContextState(
+      boards = Map("a" -> BoardState.fromItems(defaultItems.slice(0, 1))),
+      activeContext = "a"
     )
-    checkInputUi(inputState, expected)
 
-  test("basic-input-filled"):
-    val inputState = InputState
-      .fresh()
-      .copy(
-        title = "Some title",
-        description = "Some description",
-        inputMode = InputMode.Input
-      )
+    val updated = state.addContext("a-new-context")
 
     val expected = Buffer.with_lines(
       "                                                                                ",
       "                                                                                ",
-      "                                                                                ",
-      "   ┌Title───────────────────────────────────────────────────────────────────┐   ",
-      "   │Some title                                                              │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ┌Description─────────────────────────────────────────────────────────────┐   ",
-      "   │Some description                                                        │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ┌Priority────────────────────────────────────────────────────────────────┐   ",
-      "   │ LOW │ NORMAL │ IMPORTANT │ URGENT                                      │   ",
-      "   └────────────────────────────────────────────────────────────────────────┘   ",
-      "   ENTER (next) | ESC (stop editing)                                            ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
-      "                                                                                ",
+      "  ┌Contexts──────────────────────────────────────────────────────────────────┐  ",
+      "  │ a │ a-new-context                                                        │  ",
+      "  └──────────────────────────────────────────────────────────────────────────┘  ",
+      "  ┌TODOs-0─────────────────────────────┐┌In Progress─────────────────────────┐  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
+      "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
+      "  (new) | q (quit) | x (delete)                                                 ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
     )
-    checkInputUi(inputState, expected)
+    checkUi(updated, expected, config)
 
-  def checkUi(state: ContextState, expected: Buffer, config: Config) =
-    val backend = TestBackend(80, 30)
-    val terminal = Terminal.init(backend)
+  test("delete-context"):
+    val state = ContextState(
+      boards = Map(
+        "deleteMe" -> BoardState.fromItems(Vector.empty),
+        "keep" -> BoardState.fromItems(Vector.empty)
+      ),
+      activeContext = "deleteMe"
+    )
+    val newState = state.deleteContext(config)
 
-    terminal.draw: frame =>
-      ui.board.render(frame, state, config)
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "  ┌Contexts──────────────────────────────────────────────────────────────────┐  ",
+      "  │ keep                                                                     │  ",
+      "  └──────────────────────────────────────────────────────────────────────────┘  ",
+      "  ┌TODOs-0─────────────────────────────┐┌In Progress─────────────────────────┐  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
+      "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
+      "  (new) | q (quit) | x (delete)                                                 ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    checkUi(newState, expected, config)
 
-    assertBuffer(backend, expected)
+  test("update-context"):
+    val renameMe = "rename-me"
+    val newConfg = Config(dataDir = os.temp.dir())
+    os.write(newConfg.dataDir / s"${renameMe}.json", "[]")
+    val state = ContextState(
+      boards =
+        Map("rename-me" -> BoardState.fromItems(defaultItems.slice(0, 1))),
+      activeContext = "rename-me"
+    )
 
-  def checkInputUi(state: InputState, expected: Buffer) =
-    val backend = TestBackend(80, 25)
-    val terminal = Terminal.init(backend)
+    val updated = state.renameContext("renamed-context", newConfg)
 
-    terminal.draw: frame =>
-      ui.newItem.render(frame, state)
-
-    assertBuffer(backend, expected)
-
-end uiSuite
+    val expected = Buffer.with_lines(
+      "                                                                                ",
+      "                                                                                ",
+      "  ┌Contexts──────────────────────────────────────────────────────────────────┐  ",
+      "  │ renamed-context                                                          │  ",
+      "  └──────────────────────────────────────────────────────────────────────────┘  ",
+      "  ┌TODOs-1/1───────────────────────────┐┌In Progress─────────────────────────┐  ",
+      "  │NORMAL                    2023-04-12││                                    │  ",
+      "  │Here is a normal one                ││                                    │  ",
+      "  │Some description                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  │                                    ││                                    │  ",
+      "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
+      "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
+      "  (new) | q (quit) | x (delete)                                                 ",
+      "                                                                                ",
+      "                                                                                ",
+      "                                                                                "
+    )
+    checkUi(updated, expected, newConfg)
+end BoardUiSuite
