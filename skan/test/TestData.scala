@@ -6,7 +6,7 @@ import java.time.Instant
   * to disk in a tmp context files, and then load them back up to create our
   * initial ContextState.
   */
-object testData:
+object TestData:
   val defaultItems = Vector(
     BoardItem(
       date = Instant.parse("2023-04-12T20:48:25.061615Z"),
