@@ -82,4 +82,4 @@ object TestData:
   // Basically a minimal round-trip just to ensure we can read and write
   val config = Config(dataDir = tmp)
   preContext.save(config)
-end testData
+end TestData

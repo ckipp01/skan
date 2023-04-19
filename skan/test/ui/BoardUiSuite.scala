@@ -1,10 +1,10 @@
 package skan.ui
 
 import skan.*
-import skan.testData.*
+import skan.TestData.*
+import Util.*
 
 import tui.*
-import Util.*
 
 class BoardUiSuite extends munit.FunSuite:
   test("basic-board-todo"):
