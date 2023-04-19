@@ -198,8 +198,10 @@ import skan.ui.*
                   key.keyEvent().code(),
                   (char: Char) => state.title = state.title + char,
                   () =>
-                    state.title =
-                      state.title.substring(0, state.title.length - 1)
+                    if state.title.nonEmpty then
+                      state.title =
+                        state.title.substring(0, state.title.length - 1)
+                    else state.title
                 )
 
           case InputSection.Description =>
@@ -212,8 +214,10 @@ import skan.ui.*
                   key.keyEvent().code(),
                   (char: Char) => state.description = state.description + char,
                   () =>
-                    state.description = state.description
-                      .substring(0, state.description.length - 1)
+                    if state.description.nonEmpty then
+                      state.description = state.description
+                        .substring(0, state.description.length - 1)
+                    else state.description
                 )
 
           case InputSection.Priority =>
