@@ -1,7 +1,7 @@
 package skan
 
 class ContextStateSuite extends munit.FunSuite:
-  import testData.*
+  import TestData.*
 
   val contextState = ContextState.fromConfig(config)
 

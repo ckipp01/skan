@@ -1,7 +1,7 @@
 package skan
 
 import java.time.Instant
-import testData.*
+import TestData.*
 
 class BoardStateSuite extends munit.FunSuite:
 
