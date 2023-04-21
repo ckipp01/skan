@@ -121,7 +121,6 @@ import skan.ui.*
           case _ => runEditContext(contextState, newContextName)
       case _ => runEditContext(contextState, newContextName)
 
-  // TODO this and runEditContext can be refactored just to be a single method that takes an Enter function
   def runNewContext(contextState: ContextState, newContextName: String): Unit =
     terminal.draw(frame =>
       EditContext.render(frame, contextState, newContextName)
