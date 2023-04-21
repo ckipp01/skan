@@ -29,7 +29,7 @@ jobs:
 
       - run: make format-check
 
-  check-native-build-mac:
+  check-and-upload-native-build-mac:
     name: Check Graal Build (Mac)
     runs-on: macos-latest
 
@@ -38,7 +38,17 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: make prepare-for-graal package-mac
+      - run: |
+          make prepare-for-graal package-mac
+          chmod +x out/skan
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: skan-x86_64-apple-darwin
+          path: ./out/skan
+          if-no-files-found: error
+          retention-days: 5
 
   check-native-build-linux:
     name: Check Graal Build (Linux)
@@ -49,7 +59,17 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: make prepare-for-graal package-linux
+      - run: |
+          make prepare-for-graal package-linux
+          chmod +x out/skan
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: skan-x86_64-linux
+          path: ./out/skan
+          if-no-files-found: error
+          retention-days: 5
 
   # screw windows. I have no idea and can't get this to work
   #check-native-build-windows:

@@ -16,7 +16,7 @@ package-mac:
 		--graalvm-args --native-image-info \
 		--graalvm-args -H:IncludeResources=libcrossterm.dylib \
 		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o skan-local
+		skan/ -o out/skan
 
 package-linux:
 	scala-cli --power \
@@ -33,7 +33,7 @@ package-linux:
 		--graalvm-args --native-image-info \
 		--graalvm-args -H:IncludeResources=libcrossterm.so\
 		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o skan-local
+		skan/ -o out/skan
 
 package-windows:
 	scala-cli --power \
@@ -50,7 +50,7 @@ package-windows:
 		--graalvm-args --native-image-info \
 		--graalvm-args -H:IncludeResources=crossterm.dll \
 		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o skan-local
+		skan/ -o out/skan
 
 run:
 	scala-cli run skan
@@ -63,7 +63,7 @@ clean:
 	rm -f skan/resources/libcrossterm.dylib
 
 install:
-	cp skan-local ~/bin/skan
+	cp out/skan ~/bin/skan
 
 format:
 	scala-cli format scripts

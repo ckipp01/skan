@@ -1,11 +1,9 @@
 data.json
 .scala-build/
 .bsp/
-reports/
 jni-config.json
 libcrossterm.dylib
 libcrossterm.so
 crossterm.dll
-skan-local
-skan-local.build_artifacts.txt
 scripts/.scalafmt.conf
+out/
