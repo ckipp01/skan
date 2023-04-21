@@ -2,6 +2,7 @@ name: CI
 
 on:
   push:
+    tags: [ '*' ]
     branches:
       - main
   pull_request:
@@ -51,7 +52,7 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
-  check-native-build-linux:
+  check-and-upload-native-build-linux:
     name: Check Graal Build (Linux)
     runs-on: ubuntu-latest
     needs: test
@@ -85,3 +86,27 @@ jobs:
 
   #    - run: make prepare-for-graal package-windows
   #      shell: bash
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [ test, check-and-upload-native-build-linux, check-and-upload-native-build-mac]
+    if: "startsWith(github.ref, 'refs/tags/')"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          path: out/
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: out/
+
+      - name: Upload-to-release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            out/*
