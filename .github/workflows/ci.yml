@@ -32,6 +32,7 @@ jobs:
   check-and-upload-native-build-mac:
     name: Check Graal Build (Mac)
     runs-on: macos-latest
+    needs: test
 
     steps:
       - uses: actions/checkout@v3
@@ -53,6 +54,7 @@ jobs:
   check-native-build-linux:
     name: Check Graal Build (Linux)
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - uses: actions/checkout@v3
