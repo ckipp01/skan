@@ -75,3 +75,10 @@ format-check:
 
 test:
 	scala-cli test skan
+
+compile:
+	scala-cli compile skan
+
+setup-for-ide:
+	scala-cli setup-ide scripts
+	scala-cli setup-ide skan

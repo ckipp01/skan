@@ -59,6 +59,11 @@ xattr -d com.apple.quarantine <path-to-skan>
    skan-x86_64-linux/skan ~/bin/skan`
 4. Now you're ready to use `skan`.
 
+### Building from source
+
+If you'd like to build from source, see the instructions for building a native
+image in the [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
 ## Usage
 
 On the bottom of every screen you'll see a small help menu with the existing
