@@ -100,7 +100,7 @@ jobs:
         run: ls -R
 
       - name: Prep releases
-        run: base .github/prepare-release.sh
+        run: bash .github/prepare-release.sh
 
       - name: Upload-to-release
         uses: softprops/action-gh-release@v1
