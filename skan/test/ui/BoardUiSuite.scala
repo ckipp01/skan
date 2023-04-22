@@ -43,7 +43,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -87,7 +87,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -129,7 +129,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -170,7 +170,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -213,7 +213,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -253,7 +253,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -294,7 +294,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -335,7 +335,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -377,7 +377,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -419,7 +419,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -463,7 +463,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
@@ -509,7 +509,7 @@ class BoardUiSuite extends munit.FunSuite:
       "  │                                    ││                                    │  ",
       "  └────────────────────────────────────┘└────────────────────────────────────┘  ",
       "  j (↓) | k (↑) | h (←) | l (→) | ENTER (progress) | BACKSPACE (move back) | n  ",
-      "  (new) | c (context menu) | q (quit) | x (delete)                              ",
+      "  (new) | c (context menu) | TAB (switch context) | q (quit) | x (delete)       ",
       "                                                                                ",
       "                                                                                ",
       "                                                                                "
