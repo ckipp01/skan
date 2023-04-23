@@ -13,12 +13,15 @@ object EditContext:
       direction = Direction.Vertical,
       margin = Margin(3),
       constraints = Array(
+        Constraint.Length(2),
         Constraint.Length(3),
         Constraint.Length(3),
         Constraint.Length(state.sortedKeys.size + 2),
         Constraint.Length(3)
       )
     ).split(frame.size)
+
+    Header.render(frame, chunks(0))
 
     frame.render_widget(
       ParagraphWidget(
@@ -31,16 +34,16 @@ object EditContext:
         ),
         style = Style.DEFAULT.fg(Color.Yellow)
       ),
-      chunks(0)
+      chunks(1)
     )
 
     frame.set_cursor(
-      x = chunks(0).x + Grapheme(name).width + 1,
-      y = chunks(0).y + 1
+      x = chunks(1).x + Grapheme(name).width + 1,
+      y = chunks(1).y + 1
     )
 
-    ContextMenu.drawCurrentContext(frame, state.activeContext, chunks(1))
-    ContextMenu.drawAllContexts(frame, state.sortedKeys, chunks(2))
+    ContextMenu.drawCurrentContext(frame, state.activeContext, chunks(2))
+    ContextMenu.drawAllContexts(frame, state.sortedKeys, chunks(3))
 
     val helpText = Text.from(
       Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
@@ -52,6 +55,6 @@ object EditContext:
 
     val helpWidget =
       ParagraphWidget(text = helpText, wrap = Some(Wrap(trim = true)))
-    frame.render_widget(helpWidget, chunks(3))
+    frame.render_widget(helpWidget, chunks(4))
   end render
 end EditContext

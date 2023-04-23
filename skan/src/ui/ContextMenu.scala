@@ -13,12 +13,15 @@ object ContextMenu:
       direction = Direction.Vertical,
       margin = Margin(3),
       constraints = Array(
+        Constraint.Length(2),
         Constraint.Length(5),
         Constraint.Length(3),
         Constraint.Length(state.sortedKeys.size + 2),
         Constraint.Length(3)
       )
     ).split(frame.size)
+
+    Header.render(frame, chunks(0))
 
     def toListItem(name: ContextAction) =
       MyListWidget.Item(
@@ -36,11 +39,11 @@ object ContextMenu:
         ),
         highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
-      chunks(0)
+      chunks(1)
     )(menuState)
 
-    drawCurrentContext(frame, state.activeContext, chunks(1))
-    drawAllContexts(frame, state.sortedKeys, chunks(2))
+    drawCurrentContext(frame, state.activeContext, chunks(2))
+    drawAllContexts(frame, state.sortedKeys, chunks(3))
 
     val helpText = Text.from(
       Span.styled("j ", Style(add_modifier = Modifier.BOLD)),
@@ -58,7 +61,7 @@ object ContextMenu:
 
     val helpWidget =
       ParagraphWidget(text = helpText, wrap = Some(Wrap(trim = true)))
-    frame.render_widget(helpWidget, chunks(3))
+    frame.render_widget(helpWidget, chunks(4))
   end render
 
   def drawCurrentContext(frame: Frame, contextName: String, area: Rect) =

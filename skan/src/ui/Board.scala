@@ -19,9 +19,10 @@ object Board:
     val verticalChunk = Layout(
       direction = Direction.Vertical,
       constraints = Array(
+        Constraint.Length(2),
         Constraint.Length(3),
-        Constraint.Percentage(80),
-        Constraint.Length(3)
+        Constraint.Percentage(75),
+        Constraint.Length(2)
       ),
       margin = Margin(2)
     ).split(frame.size)
@@ -32,7 +33,9 @@ object Board:
         Constraint.Percentage(50),
         Constraint.Percentage(50)
       )
-    ).split(verticalChunk(1))
+    ).split(verticalChunk(2))
+
+    Header.render(frame, verticalChunk(0))
 
     val contexts = contextState.sortedKeys.map: context =>
       Spans(Array(Span.nostyle(context)))
@@ -49,7 +52,7 @@ object Board:
       highlight_style =
         Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
     )
-    frame.render_widget(tabs, verticalChunk(0))
+    frame.render_widget(tabs, verticalChunk(1))
 
     def toListItem(item: BoardItem, maxWidth: Int) =
       val priorityStyle = item.priority match
@@ -208,6 +211,6 @@ object Board:
     val helpMessage =
       ParagraphWidget(text = msg, wrap = Some(Wrap(trim = true)))
 
-    frame.render_widget(helpMessage, verticalChunk(2))
+    frame.render_widget(helpMessage, verticalChunk(3))
   end render
 end Board

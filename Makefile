@@ -2,6 +2,8 @@ prepare-for-graal:
 	scala-cli run scripts/package-setup.scala
 
 package-mac:
+	make prepare-for-graal
+	make generate-build-info
 	scala-cli --power \
 		package \
 		--native-image \
@@ -19,6 +21,8 @@ package-mac:
 		skan/ -o out/skan
 
 package-linux:
+	make prepare-for-graal
+	make generate-build-info
 	scala-cli --power \
 		package \
 		--native-image \
@@ -36,6 +40,8 @@ package-linux:
 		skan/ -o out/skan
 
 package-windows:
+	make prepare-for-graal
+	make generate-build-info
 	scala-cli --power \
 		package \
 		--native-image \
@@ -52,7 +58,11 @@ package-windows:
 		--graalvm-args -H:-UseServiceLoaderFeature \
 		skan/ -o out/skan
 
+generate-build-info:
+	scala-cli run scripts/generate-build-info.scala
+
 run:
+	make generate-build-info
 	scala-cli run skan
 
 clean:
@@ -74,11 +84,14 @@ format-check:
 	scala-cli format --check skan
 
 test:
+	make generate-build-info
 	scala-cli test skan
 
 compile:
+	make generate-build-info
 	scala-cli compile skan
 
 setup-for-ide:
+	make generate-build-info
 	scala-cli setup-ide scripts
 	scala-cli setup-ide skan
