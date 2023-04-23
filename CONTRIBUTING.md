@@ -25,7 +25,18 @@ but before using either, you'll want to run the following:
 make setup-for-ide
 ```
 
+After doing this you'll want to either open up the `skan` or `scripts` directory
+as your root depending on which you'd like to work on.
+
 ### Compiling your project
+
+NOTE: there is a bit of a hacky solution that we have to produce a
+`BuildInfo.scala` file before you compile anything. You'll notice that many of
+the commands call `make generate-build-info` before the actual command. This
+make sure that the `BuildInfo` is there. If you get a warning at any point
+because of a missing `BuildInfo` file, something is going wrong since `make
+generate-build-info` wasn't called by whatever command you're running. However,
+this is just for context, in reality it will hopefully all just work™.
 
 To compile `skan` you'll run the following:
 

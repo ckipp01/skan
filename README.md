@@ -1,9 +1,8 @@
 # skan
 
 Skan is a simple terminal [kanban
-board](https://en.wikipedia.org/wiki/Kanban_board) with minimal configuration.
-It has a focus of minimal configuration, a small core feature-set, and easy
-on-boarding.
+board](https://en.wikipedia.org/wiki/Kanban_board). It has a focus of minimal
+configuration, a small core feature-set, and easy on-boarding.
 
 ![skan overview](https://i.imgur.com/VzWRjN4.png)
 
