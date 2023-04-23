@@ -69,6 +69,7 @@ clean:
 	rm -rf skan/.scala-build/
 	rm -rf skan/.bsp/
 	rm -rf scripts/.scala-build/
+	rm -rf scripts/.bsp
 	rm -f skan/resources/jni-config.json
 	rm -f skan/resources/libcrossterm.dylib
 
