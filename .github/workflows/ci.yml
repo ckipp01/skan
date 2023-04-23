@@ -74,18 +74,17 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
-  # screw windows. I have no idea and can't get this to work
-  #check-native-build-windows:
-  #  name: Check Graal Build (Windows)
-  #  runs-on: windows-latest
+  check-and-upload-native-build-windows:
+    name: Check Graal Build (Windows)
+    runs-on: windows-latest
 
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #    - uses: coursier/cache-action@v6
-  #    - uses: VirtusLab/scala-cli-setup@main
+    steps:
+      - uses: actions/checkout@v3
+      - uses: coursier/cache-action@v6
+      - uses: VirtusLab/scala-cli-setup@main
 
-  #    - run: make prepare-for-graal package-windows
-  #      shell: bash
+      - run: make package-windows
+        shell: bash
 
   release:
     runs-on: ubuntu-latest

@@ -47,16 +47,16 @@ package-windows:
 		--native-image \
 		--graalvm-java-version 19 \
 		--graalvm-version 22.3.1 \
-		--graalvm-args --verbose \
-		--graalvm-args --no-fallback \
-		--graalvm-args -H:+ReportExceptionStackTraces \
-		--graalvm-args --initialize-at-build-time=scala.runtime.Statics$$VM \
-		--graalvm-args --initialize-at-build-time=scala.Symbol \
-		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
-		--graalvm-args --native-image-info \
-		--graalvm-args -H:IncludeResources=crossterm.dll \
-		--graalvm-args -H:-UseServiceLoaderFeature \
+		--graalvm-args "--verbose" \
+		--graalvm-args "--no-fallback" \
+		--graalvm-args "-H:+ReportExceptionStackTraces" \
+		--graalvm-args "--initialize-at-build-time=scala.Symbol" \
+		--graalvm-args "--native-image-info" \
+		--graalvm-args "-H:IncludeResources=crossterm.dll" \
+		--graalvm-args "-H:-UseServiceLoaderFeature" \
 		skan/ -o out/skan
+		#--graalvm-args "--initialize-at-build-time=scala.runtime.Statics$$VM" \
+		#--graalvm-args "--initialize-at-build-time=scala.Symbol$$" \
 
 generate-build-info:
 	scala-cli run scripts/generate-build-info.scala
