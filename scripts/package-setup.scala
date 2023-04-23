@@ -1,7 +1,10 @@
 //> using scala "3.3.0-RC4"
 //> using lib "io.get-coursier:interface:1.0.15"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
+//> using lib "com.outr::scribe:3.11.1"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
+
+package skan.scripts
 
 import coursierapi.*
 import scala.jdk.CollectionConverters.*
@@ -20,12 +23,12 @@ import scala.jdk.CollectionConverters.*
       to = os.pwd / "skan" / "resources" / file.last,
       replaceExisting = true
     )
-  println("files copied and ready to package")
+  scribe.info("files copied and ready to package")
 
 def fetch() =
   // XXX make sure this matches the version we're actually using
   val dep = Dependency.of("com.olvind.tui", "crossterm", "0.0.5");
-  println(s"fetching $dep")
+  scribe.info(s"fetching $dep")
   val fetch = Fetch.create().addDependencies(dep)
   fetch.fetch()
 
@@ -34,12 +37,12 @@ def getSystemFiles(jar: os.Path) =
   val userArch = System.getProperty("os.arch")
 
   val tmp = os.temp.dir(prefix = "skan-")
-  println(s"Copying jar file to $tmp")
+  scribe.info(s"Copying jar file to $tmp")
   os.copy(from = jar, to = tmp / jar.last, replaceExisting = true)
-  println("Unzipping jar file")
+  scribe.info("Unzipping jar file")
   val result = os.proc("jar", "xf", tmp / jar.last).call(cwd = tmp)
   if result.exitCode == 0 then
-    println("collecting files to copy")
+    scribe.info("collecting files to copy")
     val resources = os
       .walk(tmp)
       .collect:
@@ -63,8 +66,8 @@ def getSystemFiles(jar: os.Path) =
               "x86_64-darwin"
             ) =>
           file
-    println("found the following files to copy")
-    resources.foreach(println)
+    scribe.info("found the following files to copy")
+    resources.foreach(path => scribe.info(path.toString))
     resources
   else throw new RuntimeException("Can't uzip jar")
 end getSystemFiles

@@ -13,12 +13,15 @@ object NewItem:
       direction = Direction.Vertical,
       margin = Margin(3),
       constraints = Array(
+        Constraint.Length(2),
         Constraint.Length(3),
         Constraint.Length(3),
         Constraint.Length(3),
         Constraint.Length(3)
       )
     ).split(frame.size)
+
+    Header.render(frame, chunks(0))
 
     val titleWidget = ParagraphWidget(
       text = Text.nostyle(state.title),
@@ -31,7 +34,7 @@ object NewItem:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(titleWidget, chunks(0))
+    frame.render_widget(titleWidget, chunks(1))
 
     val descriptionWidget = ParagraphWidget(
       text = Text.nostyle(state.description),
@@ -47,7 +50,7 @@ object NewItem:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(descriptionWidget, chunks(1))
+    frame.render_widget(descriptionWidget, chunks(2))
 
     val priorities = Priority.values.map: priority =>
       Spans(Array(Span.nostyle(priority.toString())))
@@ -66,15 +69,15 @@ object NewItem:
           Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
         else Style.DEFAULT
     )
-    frame.render_widget(tabs, chunks(2))
+    frame.render_widget(tabs, chunks(3))
 
     if state.focusedInput != InputSection.Priority then
       state.inputMode match
         case InputMode.Normal => ()
         case InputMode.Input =>
           val (focused, chunk) =
-            if state.focusedInput == InputSection.Title then (state.title, 0)
-            else (state.description, 1)
+            if state.focusedInput == InputSection.Title then (state.title, 1)
+            else (state.description, 2)
           frame.set_cursor(
             x = chunks(chunk).x + Grapheme(focused).width + 1,
             y = chunks(chunk).y + 1
@@ -112,6 +115,6 @@ object NewItem:
         )
 
     val helpMessage = ParagraphWidget(text = msg)
-    frame.render_widget(helpMessage, chunks(3))
+    frame.render_widget(helpMessage, chunks(4))
   end render
 end NewItem

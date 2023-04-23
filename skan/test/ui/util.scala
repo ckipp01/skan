@@ -10,14 +10,22 @@ import skan.NewItemState
 import skan.MyListWidget
 
 import scala.collection.mutable
+import skan.BuildInfo
 
 /** Some utils to test the UI. These are meant for integration like testing.
   * Much of this is copied from https://github.com/oyvindberg/tui-scala and just
   * slightly adjusted for my use case.
   */
 object Util:
+  def versionLine(width: Int) =
+    val versionLength = BuildInfo.version.length() + 1
+    val need = width - versionLength
+    val back = " ".repeat(need / 2)
+    val front = if need % 2 == 0 then back else back + " "
+    front + "v" + BuildInfo.version + back
+
   def checkUi(state: ContextState, expected: Buffer, config: Config) =
-    val backend = TestBackend(80, 30)
+    val backend = TestBackend(80, 35)
     val terminal = Terminal.init(backend)
 
     terminal.draw: frame =>

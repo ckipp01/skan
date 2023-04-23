@@ -5,6 +5,7 @@
 //> using lib "dev.dirs:directories:26"
 //> using resourceDir "../resources"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
+//> using file "../.scala-build/BuildInfo.scala"
 
 package skan
 
