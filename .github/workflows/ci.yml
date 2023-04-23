@@ -40,9 +40,7 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: |
-          make prepare-for-graal package-mac
-          chmod +x out/skan
+      - run: make package-mac
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -62,9 +60,7 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: |
-          make prepare-for-graal package-linux
-          chmod +x out/skan
+      - run: make package-linux
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
