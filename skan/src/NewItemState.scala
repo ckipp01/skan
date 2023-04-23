@@ -51,7 +51,8 @@ object NewItemState:
     * @return
     *   The fresh InputState
     */
-  def fresh(): NewItemState = NewItemState(focusedInput = InputSection.Title)
+  def fresh(): NewItemState =
+    NewItemState(focusedInput = InputSection.Title, inputMode = InputMode.Input)
 
 /** Represents the two states a user can be in during the Input view. Normal,
   * where they are just viewing, and Input where they are editing.

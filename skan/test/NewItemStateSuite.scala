@@ -5,17 +5,17 @@ class NewItemStateSuite extends munit.FunSuite:
     val state = NewItemState.fresh()
     assertEquals(state.title, "")
     assertEquals(state.description, "")
-    assertEquals(state.inputMode, InputMode.Normal)
+    assertEquals(state.inputMode, InputMode.Input)
     assertEquals(state.priority, Priority.NORMAL)
     assertEquals(state.focusedInput, InputSection.Title)
 
   test("can-switch-inputmode"):
     val state = NewItemState.fresh()
-    assertEquals(state.inputMode, InputMode.Normal)
+    assertEquals(state.inputMode, InputMode.Input)
     val swapped = state.switchInputMode()
-    assertEquals(swapped.inputMode, InputMode.Input)
-    val backToNormal = swapped.switchInputMode()
-    assertEquals(backToNormal.inputMode, InputMode.Normal)
+    assertEquals(swapped.inputMode, InputMode.Normal)
+    val backToInput = swapped.switchInputMode()
+    assertEquals(backToInput.inputMode, InputMode.Input)
 
   test("can-focus-next"):
     val state = NewItemState.fresh()
