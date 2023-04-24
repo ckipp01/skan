@@ -4,7 +4,7 @@ Skan is a simple terminal [kanban
 board](https://en.wikipedia.org/wiki/Kanban_board). It has a focus of minimal
 configuration, a small core feature-set, and easy on-boarding.
 
-![skan overview](https://i.imgur.com/VzWRjN4.png)
+![skan overview](https://i.imgur.com/JvXxSzu.png)
 
 ## Overview
 
@@ -75,7 +75,7 @@ To create a new item you'll want to enter the new item screen by using `n` when
 in your board view. This will allow you to give the item a `title`, a
 `description`, and a `priority`.
 
-![new-item](https://i.imgur.com/C18J9Qi.png)
+![new-item](https://i.imgur.com/lalGYfP.png)
 
 ### Creating/editing contexts
 
@@ -86,7 +86,7 @@ using `c` from your main board view. This view will show you your existing
 contexts, your current context, and a choice between context actions that you
 can choose:
 
-![context-view](https://i.imgur.com/cwbQEsX.png)
+![context-view](https://i.imgur.com/yDmcDr9.png)
 
 ### Configuration
 
