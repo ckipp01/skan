@@ -7,3 +7,4 @@ libcrossterm.so
 crossterm.dll
 scripts/.scalafmt.conf
 out/
+dest/
