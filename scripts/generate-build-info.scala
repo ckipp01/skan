@@ -1,4 +1,4 @@
-//> using scala "3.3.0-RC4"
+//> using scala "3.3.0-RC5"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
 //> using lib "com.outr::scribe:3.11.1"
