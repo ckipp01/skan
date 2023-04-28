@@ -1,4 +1,4 @@
-//> using scala "3.3.0-RC4"
+//> using scala "3.3.0-RC5"
 //> using lib "io.get-coursier:interface:1.0.15"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
 //> using lib "com.outr::scribe:3.11.1"
