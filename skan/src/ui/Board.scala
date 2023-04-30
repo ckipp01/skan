@@ -3,9 +3,10 @@ package skan.ui
 import skan.*
 
 import tui.*
-import tui.widgets.BlockWidget
-import tui.widgets.ParagraphWidget
 import tui.widgets.tabs.TabsWidget
+import tui.widgets.BlockWidget
+import tui.widgets.ListWidget
+import tui.widgets.ParagraphWidget
 import tui.widgets.ParagraphWidget.Wrap
 
 object Board:
@@ -49,10 +50,10 @@ object Board:
         )
       ),
       selected = contextState.sortedKeys.indexOf(contextState.activeContext),
-      highlight_style =
-        Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
+      highlightStyle =
+        Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
     )
-    frame.render_widget(tabs, verticalChunk(1))
+    frame.renderWidget(tabs, verticalChunk(1))
 
     def toListItem(item: BoardItem, maxWidth: Int) =
       val priorityStyle = item.priority match
@@ -84,23 +85,23 @@ object Board:
           ),
           Span.styled(
             item.date.toString(),
-            Style(fg = Some(Color.Gray), add_modifier = Modifier.ITALIC)
-              .add_modifier(Modifier.DIM)
+            Style(fg = Some(Color.Gray), addModifier = Modifier.ITALIC)
+              .addModifier(Modifier.DIM)
           )
         )
       val titleSpans = Spans.from(
-        Span.styled(title, Style(add_modifier = Modifier.BOLD))
+        Span.styled(title, Style(addModifier = Modifier.BOLD))
       )
       val descriptionSpans = Spans.from(
-        Span.styled(description, Style(add_modifier = Modifier.DIM))
+        Span.styled(description, Style(addModifier = Modifier.DIM))
       )
       val spacerSpans = Spans.from(
         Span.styled(
           " ".repeat(horizontalChunks(0).width),
-          Style(add_modifier = Modifier.DIM)
+          Style(addModifier = Modifier.DIM)
         )
       )
-      MyListWidget.Item(
+      ListWidget.Item(
         Text(Array(headerSpans, titleSpans, descriptionSpans, spacerSpans))
       )
     end toListItem
@@ -130,8 +131,8 @@ object Board:
             )
       else Spans.nostyle("TODOs")
 
-    frame.render_stateful_widget(
-      MyListWidget(
+    frame.renderStatefulWidget(
+      ListWidget(
         items = todoItems,
         block = Some(
           BlockWidget(
@@ -139,7 +140,7 @@ object Board:
             title = Some(todoBorderTitle)
           )
         ),
-        highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
+        highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
       horizontalChunks(0)
     )(state.todoState)
@@ -159,8 +160,8 @@ object Board:
             )
       else Spans.nostyle("In Progress")
 
-    frame.render_stateful_widget(
-      MyListWidget(
+    frame.renderStatefulWidget(
+      ListWidget(
         items = inProgressItems,
         block = Some(
           BlockWidget(
@@ -168,49 +169,49 @@ object Board:
             title = Some(inProgressBorderTitle)
           )
         ),
-        highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
+        highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
       horizontalChunks(1)
     )(state.inProgressState)
 
     val msg = Text.from(
-      Span.styled("j ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(↓)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("j ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(↓)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("k ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(↑)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("k ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(↑)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("h ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(←)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("h ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(←)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("l ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(→)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("l ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(→)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(progress)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("ENTER ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(progress)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("BACKSPACE ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(move back)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("BACKSPACE ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(move back)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("n ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(new)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("n ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(new)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("c ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(context menu)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("c ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(context menu)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("TAB ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(switch context)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("TAB ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(switch context)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(quit)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("q ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(quit)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("x ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(delete)", Style(add_modifier = Modifier.DIM))
+      Span.styled("x ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(delete)", Style(addModifier = Modifier.DIM))
     )
 
     val helpMessage =
       ParagraphWidget(text = msg, wrap = Some(Wrap(trim = true)))
 
-    frame.render_widget(helpMessage, verticalChunk(3))
+    frame.renderWidget(helpMessage, verticalChunk(3))
   end render
 end Board

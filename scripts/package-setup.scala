@@ -27,7 +27,7 @@ import scala.jdk.CollectionConverters.*
 
 def fetch() =
   // XXX make sure this matches the version we're actually using
-  val dep = Dependency.of("com.olvind.tui", "crossterm", "0.0.5");
+  val dep = Dependency.of("com.olvind.tui", "crossterm", "0.0.6");
   scribe.info(s"fetching $dep")
   val fetch = Fetch.create().addDependencies(dep)
   fetch.fetch()
@@ -45,6 +45,9 @@ def getSystemFiles(jar: os.Path) =
     scribe.info("collecting files to copy")
     val resources = os
       .walk(tmp)
+      .map: x =>
+        scribe.info(x.toString)
+        x
       .collect:
         case file if file.last == "jni-config.json" => file
         case file
@@ -56,15 +59,12 @@ def getSystemFiles(jar: os.Path) =
         case file
             if userOs.contains(
               "mac"
-            ) && userArch == "aarch64" && file.last == "libcrossterm.dylib" && file.toString
-              .contains("arm64-darwin") =>
+            ) && userArch == "aarch64" && file.last == "libnative-arm64-darwin-crossterm.dylib" =>
           file
         case file
             if userOs.contains(
               "mac"
-            ) && file.last == "libcrossterm.dylib" && file.toString.contains(
-              "x86_64-darwin"
-            ) =>
+            ) && file.last == "libnative-x86_64-darwin-crossterm.dylib" =>
           file
     scribe.info("found the following files to copy")
     resources.foreach(path => scribe.info(path.toString))

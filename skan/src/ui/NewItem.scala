@@ -34,7 +34,7 @@ object NewItem:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(titleWidget, chunks(1))
+    frame.renderWidget(titleWidget, chunks(1))
 
     val descriptionWidget = ParagraphWidget(
       text = Text.nostyle(state.description),
@@ -50,7 +50,7 @@ object NewItem:
         case _ => Style.DEFAULT
     )
 
-    frame.render_widget(descriptionWidget, chunks(2))
+    frame.renderWidget(descriptionWidget, chunks(2))
 
     val priorities = Priority.values.map: priority =>
       Spans(Array(Span.nostyle(priority.toString())))
@@ -64,12 +64,12 @@ object NewItem:
         )
       ),
       selected = state.priority.ordinal,
-      highlight_style =
+      highlightStyle =
         if state.focusedInput == InputSection.Priority then
-          Style(add_modifier = Modifier.BOLD, fg = Some(Color.Yellow))
+          Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
         else Style.DEFAULT
     )
-    frame.render_widget(tabs, chunks(3))
+    frame.renderWidget(tabs, chunks(3))
 
     if state.focusedInput != InputSection.Priority then
       state.inputMode match
@@ -78,7 +78,7 @@ object NewItem:
           val (focused, chunk) =
             if state.focusedInput == InputSection.Title then (state.title, 1)
             else (state.description, 2)
-          frame.set_cursor(
+          frame.setCursor(
             x = chunks(chunk).x + Grapheme(focused).width + 1,
             y = chunks(chunk).y + 1
           )
@@ -88,33 +88,33 @@ object NewItem:
         state.inputMode match
           case InputMode.Normal =>
             Text.from(
-              Span.styled("i ", Style(add_modifier = Modifier.BOLD)),
-              Span.styled("(edit)", Style(add_modifier = Modifier.DIM)),
+              Span.styled("i ", Style(addModifier = Modifier.BOLD)),
+              Span.styled("(edit)", Style(addModifier = Modifier.DIM)),
               Span.nostyle(" | "),
-              Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
-              Span.styled("(exit)", Style(add_modifier = Modifier.DIM))
+              Span.styled("q ", Style(addModifier = Modifier.BOLD)),
+              Span.styled("(exit)", Style(addModifier = Modifier.DIM))
             )
           case InputMode.Input =>
             Text.from(
-              Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-              Span.styled("(next)", Style(add_modifier = Modifier.DIM)),
+              Span.styled("ENTER ", Style(addModifier = Modifier.BOLD)),
+              Span.styled("(next)", Style(addModifier = Modifier.DIM)),
               Span.nostyle(" | "),
-              Span.styled("ESC ", Style(add_modifier = Modifier.BOLD)),
+              Span.styled("ESC ", Style(addModifier = Modifier.BOLD)),
               Span.nostyle("(stop editing)")
             )
       case InputSection.Priority =>
         Text.from(
-          Span.styled("TAB", Style(add_modifier = Modifier.BOLD)),
+          Span.styled("TAB", Style(addModifier = Modifier.BOLD)),
           Span.nostyle("(select next)"),
           Span.nostyle(" | "),
-          Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-          Span.styled("(complete)", Style(add_modifier = Modifier.DIM)),
+          Span.styled("ENTER ", Style(addModifier = Modifier.BOLD)),
+          Span.styled("(complete)", Style(addModifier = Modifier.DIM)),
           Span.nostyle(" | "),
-          Span.styled("q", Style(add_modifier = Modifier.BOLD)),
+          Span.styled("q", Style(addModifier = Modifier.BOLD)),
           Span.nostyle("(quit)")
         )
 
     val helpMessage = ParagraphWidget(text = msg)
-    frame.render_widget(helpMessage, chunks(4))
+    frame.renderWidget(helpMessage, chunks(4))
   end render
 end NewItem

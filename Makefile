@@ -2,7 +2,7 @@ prepare-for-graal:
 	scala-cli run scripts/package-setup.scala
 
 package-mac:
-	make prepare-for-graal
+	#make prepare-for-graal
 	make generate-build-info
 	scala-cli --power \
 		package \
@@ -16,7 +16,7 @@ package-mac:
 		--graalvm-args --initialize-at-build-time=scala.Symbol \
 		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
 		--graalvm-args --native-image-info \
-		--graalvm-args -H:IncludeResources=libcrossterm.dylib \
+		--graalvm-args -H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib \
 		--graalvm-args -H:-UseServiceLoaderFeature \
 		skan/ -o out/skan
 

@@ -16,7 +16,7 @@ class BoardUiSuite extends munit.FunSuite:
       activeContext = "a"
     )
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -65,7 +65,7 @@ class BoardUiSuite extends munit.FunSuite:
     )
     val switched = state.switchColumn()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -112,7 +112,7 @@ class BoardUiSuite extends munit.FunSuite:
 
     state.progress()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -158,7 +158,7 @@ class BoardUiSuite extends munit.FunSuite:
     )
     state.progress()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -206,7 +206,7 @@ class BoardUiSuite extends munit.FunSuite:
     val inProgress = state.switchColumn()
     inProgress.moveBack()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -251,7 +251,7 @@ class BoardUiSuite extends munit.FunSuite:
       activeContext = "empty"
     )
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -297,7 +297,7 @@ class BoardUiSuite extends munit.FunSuite:
     )
     // Calling next here shouldn't change the 0 after TODOs
     state.next()
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -343,7 +343,7 @@ class BoardUiSuite extends munit.FunSuite:
     )
     val newState = state.deleteItem()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -390,7 +390,7 @@ class BoardUiSuite extends munit.FunSuite:
     val first = state.deleteItem()
     val second = first.deleteItem()
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -437,7 +437,7 @@ class BoardUiSuite extends munit.FunSuite:
 
     val updated = state.addContext("a-new-context")
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -486,7 +486,7 @@ class BoardUiSuite extends munit.FunSuite:
     )
     val newState = state.deleteContext(config)
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
@@ -537,7 +537,7 @@ class BoardUiSuite extends munit.FunSuite:
 
     val updated = state.renameContext("renamed-context", newConfg)
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                      skan                                      ",
