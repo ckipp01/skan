@@ -74,6 +74,28 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
+  check-and-upload-native-build-windows:
+    name: Check Graal Build (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: coursier/cache-action@v6
+      - uses: VirtusLab/scala-cli-setup@main
+
+      - run: make package
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: skan-x86_64-win
+          path: ./out/skan
+          if-no-files-found: error
+          retention-days: 5
+
   release:
     runs-on: ubuntu-latest
     needs: [ test, check-and-upload-native-build-linux, check-and-upload-native-build-mac]
