@@ -42,7 +42,7 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: make package-mac
+      - run: make package
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -64,7 +64,7 @@ jobs:
       - uses: coursier/cache-action@v6
       - uses: VirtusLab/scala-cli-setup@main
 
-      - run: make package-linux
+      - run: make package
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3

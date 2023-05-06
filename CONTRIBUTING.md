@@ -73,13 +73,8 @@ make format
 
 ### Building a native image
 
-Currently there is a couple workarounds in place to account for [this
-issue](https://github.com/oracle/graal/issues/5219) in Graal. Because of this
-you need to run a prepare script ahead of packaging. So to fully package you'd
-run the following (replace mac with linux or windows depending on your OS):
-
 ```
-make prepare-for-graal package-mac
+make package
 ```
 
 If this works you should get a `out/skan` created that you can execute with
