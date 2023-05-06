@@ -3,14 +3,14 @@ package skan.ui
 import munit.Assertions.*
 import tui.*
 import tui.internal.saturating.*
+import tui.widgets.ListWidget
 
+import skan.BuildInfo
 import skan.ContextState
 import skan.Config
 import skan.NewItemState
-import skan.MyListWidget
 
 import scala.collection.mutable
-import skan.BuildInfo
 
 /** Some utils to test the UI. These are meant for integration like testing.
   * Much of this is copied from https://github.com/oyvindberg/tui-scala and just
@@ -44,7 +44,7 @@ object Util:
 
   def checkContextMenuUi(
       contextState: ContextState,
-      menuState: MyListWidget.State,
+      menuState: ListWidget.State,
       expected: Buffer
   ) =
     val backend = TestBackend(80, 25)

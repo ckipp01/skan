@@ -2,13 +2,14 @@ package skan.ui
 
 import tui.*
 import tui.widgets.BlockWidget
+import tui.widgets.ListWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.ParagraphWidget.Wrap
 
 import skan.*
 
 object ContextMenu:
-  def render(frame: Frame, state: ContextState, menuState: MyListWidget.State) =
+  def render(frame: Frame, state: ContextState, menuState: ListWidget.State) =
     val chunks = Layout(
       direction = Direction.Vertical,
       margin = Margin(3),
@@ -24,12 +25,12 @@ object ContextMenu:
     Header.render(frame, chunks(0))
 
     def toListItem(name: ContextAction) =
-      MyListWidget.Item(
+      ListWidget.Item(
         Text(Array(Spans.nostyle(s"- ${name.pretty()}")))
       )
 
-    frame.render_stateful_widget(
-      MyListWidget(
+    frame.renderStatefulWidget(
+      ListWidget(
         items = ContextAction.values.map(toListItem),
         block = Some(
           BlockWidget(
@@ -37,7 +38,7 @@ object ContextMenu:
             title = Some(Spans.nostyle("Choose an action"))
           )
         ),
-        highlight_style = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
+        highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
       ),
       chunks(1)
     )(menuState)
@@ -46,26 +47,26 @@ object ContextMenu:
     drawAllContexts(frame, state.sortedKeys, chunks(3))
 
     val helpText = Text.from(
-      Span.styled("j ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(↓)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("j ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(↓)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("k ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(↑)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("k ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(↑)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("q ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(quit)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("q ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(quit)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(select)", Style(add_modifier = Modifier.DIM))
+      Span.styled("ENTER ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(select)", Style(addModifier = Modifier.DIM))
     )
 
     val helpWidget =
       ParagraphWidget(text = helpText, wrap = Some(Wrap(trim = true)))
-    frame.render_widget(helpWidget, chunks(4))
+    frame.renderWidget(helpWidget, chunks(4))
   end render
 
   def drawCurrentContext(frame: Frame, contextName: String, area: Rect) =
-    frame.render_widget(
+    frame.renderWidget(
       ParagraphWidget(
         text = Text.nostyle(contextName),
         block = Some(
@@ -79,7 +80,7 @@ object ContextMenu:
     )
 
   def drawAllContexts(frame: Frame, contextNames: Vector[String], area: Rect) =
-    frame.render_widget(
+    frame.renderWidget(
       ParagraphWidget(
         text = Text.fromSpans(
           contextNames.map(context => Spans.nostyle(s"- $context"))*

@@ -1,8 +1,4 @@
-prepare-for-graal:
-	scala-cli run scripts/package-setup.scala
-
-package-mac:
-	make prepare-for-graal
+package:
 	make generate-build-info
 	scala-cli --power \
 		package \
@@ -16,45 +12,11 @@ package-mac:
 		--graalvm-args --initialize-at-build-time=scala.Symbol \
 		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
 		--graalvm-args --native-image-info \
-		--graalvm-args -H:IncludeResources=libcrossterm.dylib \
-		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o out/skan
-
-package-linux:
-	make prepare-for-graal
-	make generate-build-info
-	scala-cli --power \
-		package \
-		--native-image \
-		--graalvm-java-version 19 \
-		--graalvm-version 22.3.1 \
-		--graalvm-args --verbose \
-		--graalvm-args --no-fallback \
-		--graalvm-args -H:+ReportExceptionStackTraces \
-		--graalvm-args --initialize-at-build-time=scala.runtime.Statics$$VM \
-		--graalvm-args --initialize-at-build-time=scala.Symbol \
-		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
-		--graalvm-args --native-image-info \
-		--graalvm-args -H:IncludeResources=libcrossterm.so\
-		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o out/skan
-
-package-windows:
-	make prepare-for-graal
-	make generate-build-info
-	scala-cli --power \
-		package \
-		--native-image \
-		--graalvm-java-version 19 \
-		--graalvm-version 22.3.1 \
-		--graalvm-args --verbose \
-		--graalvm-args --no-fallback \
-		--graalvm-args -H:+ReportExceptionStackTraces \
-		--graalvm-args --initialize-at-build-time=scala.runtime.Statics$$VM \
-		--graalvm-args --initialize-at-build-time=scala.Symbol \
-		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
-		--graalvm-args --native-image-info \
-		--graalvm-args -H:IncludeResources=crossterm.dll \
+		--graalvm-args -H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib \
+    --graalvm-args -H:IncludeResources=libnative-arm64-darwin-crossterm.dylib \
+    --graalvm-args -H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib \
+    --graalvm-args -H:IncludeResources=libnative-x86_64-linux-crossterm.so \
+    --graalvm-args -H:IncludeResources=native-x86_64-windows-crossterm.dll \
 		--graalvm-args -H:-UseServiceLoaderFeature \
 		skan/ -o out/skan
 
@@ -70,8 +32,6 @@ clean:
 	rm -rf skan/.bsp/
 	rm -rf scripts/.scala-build/
 	rm -rf scripts/.bsp
-	rm -f skan/resources/jni-config.json
-	rm -f skan/resources/libcrossterm.dylib
 
 install:
 	cp out/skan ~/bin/skan

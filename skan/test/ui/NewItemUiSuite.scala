@@ -9,7 +9,7 @@ import Util.*
 class NewItemUiSuite extends munit.FunSuite:
   test("basic-input-fresh"):
     val inputState = NewItemState.fresh()
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -41,7 +41,7 @@ class NewItemUiSuite extends munit.FunSuite:
   test("basic-input-normal"):
     val inputState = NewItemState.fresh()
     val newState = inputState.switchInputMode()
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -79,7 +79,7 @@ class NewItemUiSuite extends munit.FunSuite:
         inputMode = InputMode.Input
       )
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",

@@ -1,11 +1,11 @@
 package skan.ui
 
 import tui.*
-import Util.*
+import tui.widgets.ListWidget
 
 import skan.BoardState
 import skan.ContextState
-import skan.MyListWidget
+import Util.*
 
 class ContextMenuUiSuite extends munit.FunSuite:
   test("basic-context"):
@@ -16,9 +16,9 @@ class ContextMenuUiSuite extends munit.FunSuite:
       ),
       activeContext = "a"
     )
-    val menuState = MyListWidget.State(selected = Some(0))
+    val menuState = ListWidget.State(selected = Some(0))
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",
@@ -55,7 +55,7 @@ class ContextMenuUiSuite extends munit.FunSuite:
       activeContext = "a"
     )
 
-    val expected = Buffer.with_lines(
+    val expected = Buffer.withLines(
       "                                                                                ",
       "                                                                                ",
       "                                                                                ",

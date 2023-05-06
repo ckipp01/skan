@@ -23,7 +23,7 @@ object EditContext:
 
     Header.render(frame, chunks(0))
 
-    frame.render_widget(
+    frame.renderWidget(
       ParagraphWidget(
         text = Text.nostyle(name),
         block = Some(
@@ -37,7 +37,7 @@ object EditContext:
       chunks(1)
     )
 
-    frame.set_cursor(
+    frame.setCursor(
       x = chunks(1).x + Grapheme(name).width + 1,
       y = chunks(1).y + 1
     )
@@ -46,15 +46,15 @@ object EditContext:
     ContextMenu.drawAllContexts(frame, state.sortedKeys, chunks(3))
 
     val helpText = Text.from(
-      Span.styled("ENTER ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(accept)", Style(add_modifier = Modifier.DIM)),
+      Span.styled("ENTER ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(accept)", Style(addModifier = Modifier.DIM)),
       Span.nostyle(" | "),
-      Span.styled("ESC ", Style(add_modifier = Modifier.BOLD)),
-      Span.styled("(quit)", Style(add_modifier = Modifier.DIM))
+      Span.styled("ESC ", Style(addModifier = Modifier.BOLD)),
+      Span.styled("(quit)", Style(addModifier = Modifier.DIM))
     )
 
     val helpWidget =
       ParagraphWidget(text = helpText, wrap = Some(Wrap(trim = true)))
-    frame.render_widget(helpWidget, chunks(4))
+    frame.renderWidget(helpWidget, chunks(4))
   end render
 end EditContext

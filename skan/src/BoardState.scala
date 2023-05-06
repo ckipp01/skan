@@ -1,5 +1,7 @@
 package skan
 
+import tui.widgets.ListWidget
+
 /** State pertaining to a kanban board on the main UI.
   *
   * @param todoState
@@ -12,8 +14,8 @@ package skan
   *   the focused list on the board
   */
 final case class BoardState(
-    todoState: MyListWidget.State,
-    inProgressState: MyListWidget.State,
+    todoState: ListWidget.State,
+    inProgressState: ListWidget.State,
     items: Array[BoardItem],
     focusedList: Status
 ):
@@ -200,8 +202,8 @@ object BoardState:
   def fromItems(items: Vector[BoardItem]): BoardState =
     BoardState(
       todoState =
-        MyListWidget.State(selected = if items.size > 0 then Some(0) else None),
-      inProgressState = MyListWidget.State(selected = None),
+        ListWidget.State(selected = if items.size > 0 then Some(0) else None),
+      inProgressState = ListWidget.State(selected = None),
       items = items.toArray,
       focusedList = Status.TODO
     )

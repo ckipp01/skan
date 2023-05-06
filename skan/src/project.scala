@@ -1,9 +1,8 @@
 //> using scala "3.3.0-RC5"
-//> using lib "com.olvind.tui::tui:0.0.5"
+//> using lib "com.olvind.tui::tui:0.0.7"
 //> using lib "com.lihaoyi::upickle:3.1.0"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
 //> using lib "dev.dirs:directories:26"
-//> using resourceDir "../resources"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
 //> using file "../.scala-build/BuildInfo.scala"
 
@@ -12,6 +11,7 @@ package skan
 import tui.*
 import tui.crossterm.Event
 import tui.crossterm.KeyCode
+import tui.widgets.ListWidget
 
 import skan.ui.*
 
@@ -40,7 +40,7 @@ import skan.ui.*
             val newState = state.deleteItem()
             runBoard(newState)
           case char: KeyCode.Char if char.c() == 'c' =>
-            runContextMenu(state, MyListWidget.State(selected = Some(0)))
+            runContextMenu(state, ListWidget.State(selected = Some(0)))
           case _: KeyCode.Enter =>
             state.progress()
             runBoard(state)
@@ -57,7 +57,7 @@ import skan.ui.*
 
   def runContextMenu(
       contextState: ContextState,
-      menuState: MyListWidget.State
+      menuState: ListWidget.State
   ): Unit =
     terminal.draw(frame => ContextMenu.render(frame, contextState, menuState))
     jni.read() match

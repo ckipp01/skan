@@ -19,15 +19,15 @@ object Header:
         text = Text.fromSpans(
           Spans.styled(
             s"skan",
-            Style(add_modifier = Modifier.BOLD)
+            Style(addModifier = Modifier.BOLD)
           ),
           Spans.styled(
             s"v${BuildInfo.version}",
-            Style(fg = Some(Color.White), add_modifier = Modifier.DIM)
-              .add_modifier(Modifier.ITALIC)
+            Style(fg = Some(Color.White), addModifier = Modifier.DIM)
+              .addModifier(Modifier.ITALIC)
           )
         ),
         alignment = Alignment.Center
       )
 
-    frame.render_widget(header, rect)
+    frame.renderWidget(header, rect)
