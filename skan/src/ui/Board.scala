@@ -119,6 +119,11 @@ object Board:
     val todoBorderTitle =
       if state.focusedList == Status.TODO then
         state.todoState.selected match
+          case Some(_) if todoItems.size == 0 =>
+            Spans.styled(
+              s"TODOs-${todoItems.size}",
+              Style.DEFAULT.fg(Color.Yellow)
+            )
           case Some(index) =>
             Spans.styled(
               s"TODOs-${index + 1}/${todoItems.size}",
