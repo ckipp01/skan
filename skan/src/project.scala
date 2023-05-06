@@ -1,5 +1,5 @@
 //> using scala "3.3.0-RC5"
-//> using lib "com.olvind.tui::tui:0.0.7"
+//> using lib "com.olvind.tui::tui:0.0.7+3-2e42d36f-SNAPSHOT"
 //> using lib "com.lihaoyi::upickle:3.1.0"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
 //> using lib "dev.dirs:directories:26"

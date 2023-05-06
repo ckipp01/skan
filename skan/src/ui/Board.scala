@@ -17,43 +17,20 @@ object Board:
   ): Unit =
     val state = contextState.boards(contextState.activeContext)
 
-    val verticalChunk = Layout(
-      direction = Direction.Vertical,
-      constraints = Array(
-        Constraint.Length(2),
-        Constraint.Length(3),
-        Constraint.Percentage(75),
-        Constraint.Length(2)
-      ),
-      margin = Margin(2)
-    ).split(frame.size)
-
-    val horizontalChunks = Layout(
-      direction = Direction.Horizontal,
-      constraints = Array(
-        Constraint.Percentage(50),
-        Constraint.Percentage(50)
-      )
-    ).split(verticalChunk(2))
-
-    Header.render(frame, verticalChunk(0))
-
     val contexts = contextState.sortedKeys.map: context =>
       Spans(Array(Span.nostyle(context)))
 
-    val tabs = TabsWidget(
-      titles = contexts.toArray,
-      block = Some(
-        BlockWidget(
-          borders = Borders.ALL,
-          title = Some(Spans.nostyle("Contexts"))
-        )
-      ),
-      selected = contextState.sortedKeys.indexOf(contextState.activeContext),
-      highlightStyle =
-        Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
+    val tabs = BlockWidget(
+      borders = Borders.ALL,
+      title = Some(Spans.nostyle("Contexts"))
+    )(
+      TabsWidget(
+        titles = contexts.toArray,
+        selected = contextState.sortedKeys.indexOf(contextState.activeContext),
+        highlightStyle =
+          Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
+      )
     )
-    frame.renderWidget(tabs, verticalChunk(1))
 
     def toListItem(item: BoardItem, maxWidth: Int) =
       val priorityStyle = item.priority match
@@ -79,7 +56,7 @@ object Board:
           Span.styled(priority, priorityStyle),
           Span.nostyle(
             " ".repeat(
-              horizontalChunks(0).width - (localDate
+              maxWidth - (localDate
                 .length() + priority.length) - 2
             )
           ),
@@ -97,7 +74,7 @@ object Board:
       )
       val spacerSpans = Spans.from(
         Span.styled(
-          " ".repeat(horizontalChunks(0).width),
+          " ".repeat(maxWidth),
           Style(addModifier = Modifier.DIM)
         )
       )
@@ -108,13 +85,9 @@ object Board:
 
     val todoItems = state
       .todoItems()
-      .map: item =>
-        toListItem(item, horizontalChunks(0).width)
 
     val inProgressItems = state
       .inProgressItems()
-      .map: item =>
-        toListItem(item, horizontalChunks(1).width)
 
     val todoBorderTitle =
       if state.focusedList == Status.TODO then
@@ -136,19 +109,17 @@ object Board:
             )
       else Spans.nostyle("TODOs")
 
-    frame.renderStatefulWidget(
-      ListWidget(
-        items = todoItems,
-        block = Some(
-          BlockWidget(
-            borders = Borders.ALL,
-            title = Some(todoBorderTitle)
-          )
-        ),
-        highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
-      ),
-      horizontalChunks(0)
-    )(state.todoState)
+    val todoBoard = Widget: (area, buf) =>
+      BlockWidget(
+        borders = Borders.ALL,
+        title = Some(todoBorderTitle)
+      )(
+        ListWidget(
+          state = state.todoState,
+          items = todoItems.map(item => toListItem(item, area.width)),
+          highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
+        )
+      ).render(area, buf)
 
     val inProgressBorderTitle =
       if state.focusedList == Status.INPROGRESS then
@@ -165,19 +136,17 @@ object Board:
             )
       else Spans.nostyle("In Progress")
 
-    frame.renderStatefulWidget(
-      ListWidget(
-        items = inProgressItems,
-        block = Some(
-          BlockWidget(
-            borders = Borders.ALL,
-            title = Some(inProgressBorderTitle)
-          )
-        ),
-        highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
-      ),
-      horizontalChunks(1)
-    )(state.inProgressState)
+    val inProgressBoard = Widget: (area, buf) =>
+      BlockWidget(
+        borders = Borders.ALL,
+        title = Some(inProgressBorderTitle)
+      )(
+        ListWidget(
+          state = state.inProgressState,
+          items = inProgressItems.map(item => toListItem(item, area.width)),
+          highlightStyle = Style(bg = Some(Color.Gray), fg = Some(Color.Black))
+        )
+      ).render(area, buf)
 
     val msg = Text.from(
       Span.styled("j ", Style(addModifier = Modifier.BOLD)),
@@ -217,6 +186,21 @@ object Board:
     val helpMessage =
       ParagraphWidget(text = msg, wrap = Some(Wrap(trim = true)))
 
-    frame.renderWidget(helpMessage, verticalChunk(3))
+    val boardLayout = Layout.detailed(
+      direction = Direction.Horizontal
+    )(
+      (Constraint.Percentage(50), todoBoard),
+      (Constraint.Percentage(50), inProgressBoard)
+    )
+
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(2))(
+        (Constraint.Length(2), Header.widget),
+        (Constraint.Length(3), tabs),
+        (Constraint.Percentage(75), boardLayout),
+        (Constraint.Length(2), helpMessage)
+      )
+      .render(frame.size, frame.buffer)
+
   end render
 end Board
