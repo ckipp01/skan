@@ -13,10 +13,9 @@ package:
 		--graalvm-args --initialize-at-build-time=scala.Symbol$$ \
 		--graalvm-args --native-image-info \
 		--graalvm-args -H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib \
-    --graalvm-args -H:IncludeResources=libnative-arm64-darwin-crossterm.dylib \
-    --graalvm-args -H:IncludeResources=libnative-x86_64-darwin-crossterm.dylib \
-    --graalvm-args -H:IncludeResources=libnative-x86_64-linux-crossterm.so \
-    --graalvm-args -H:IncludeResources=native-x86_64-windows-crossterm.dll \
+		--graalvm-args -H:IncludeResources=libnative-arm64-darwin-crossterm.dylib \
+		--graalvm-args -H:IncludeResources=libnative-x86_64-linux-crossterm.so \
+		--graalvm-args -H:IncludeResources=native-x86_64-windows-crossterm.dll \
 		--graalvm-args -H:-UseServiceLoaderFeature \
 		skan/ -o out/skan
 
