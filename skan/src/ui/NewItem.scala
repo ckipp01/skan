@@ -9,79 +9,71 @@ import tui.widgets.tabs.TabsWidget
 
 object NewItem:
   def render(frame: Frame, state: NewItemState): Unit =
-    val chunks = Layout(
-      direction = Direction.Vertical,
-      margin = Margin(3),
-      constraints = Array(
-        Constraint.Length(2),
-        Constraint.Length(3),
-        Constraint.Length(3),
-        Constraint.Length(3),
-        Constraint.Length(3)
-      )
-    ).split(frame.size)
 
-    Header.render(frame, chunks(0))
-
-    val titleWidget = ParagraphWidget(
-      text = Text.nostyle(state.title),
-      block = Some(
-        BlockWidget(borders = Borders.ALL, title = Some(Spans.nostyle("Title")))
-      ),
-      style = (state.focusedInput, state.inputMode) match
-        case (InputSection.Title, InputMode.Input) =>
-          Style.DEFAULT.fg(Color.Yellow)
-        case _ => Style.DEFAULT
-    )
-
-    frame.renderWidget(titleWidget, chunks(1))
-
-    val descriptionWidget = ParagraphWidget(
-      text = Text.nostyle(state.description),
-      block = Some(
-        BlockWidget(
-          borders = Borders.ALL,
-          title = Some(Spans.nostyle("Description"))
+    val titleWidget = Widget: (area, buf) =>
+      BlockWidget(
+        borders = Borders.ALL,
+        title = Some(Spans.nostyle("Title")),
+        borderStyle = (state.focusedInput, state.inputMode) match
+          case (InputSection.Title, InputMode.Input) =>
+            Style.DEFAULT.fg(Color.Yellow)
+          case _ => Style.DEFAULT
+      )(
+        ParagraphWidget(
+          text = Text.nostyle(state.title),
+          style = (state.focusedInput, state.inputMode) match
+            case (InputSection.Title, InputMode.Input) =>
+              Style.DEFAULT.fg(Color.Yellow)
+            case _ => Style.DEFAULT
         )
-      ),
-      style = (state.focusedInput, state.inputMode) match
-        case (InputSection.Description, InputMode.Input) =>
-          Style.DEFAULT.fg(Color.Yellow)
-        case _ => Style.DEFAULT
-    )
+      ).render(area, buf)
+      if state.focusedInput == InputSection.Title && state.inputMode == InputMode.Input
+      then
+        frame.setCursor(
+          x = area.x + Grapheme(state.title).width + 1,
+          y = area.y + 1
+        )
 
-    frame.renderWidget(descriptionWidget, chunks(2))
+    val descriptionWidget = Widget: (area, buf) =>
+      BlockWidget(
+        borders = Borders.ALL,
+        title = Some(Spans.nostyle("Description")),
+        borderStyle = (state.focusedInput, state.inputMode) match
+          case (InputSection.Title, InputMode.Input) =>
+            Style.DEFAULT.fg(Color.Yellow)
+          case _ => Style.DEFAULT
+      )(
+        ParagraphWidget(
+          text = Text.nostyle(state.description),
+          style = (state.focusedInput, state.inputMode) match
+            case (InputSection.Description, InputMode.Input) =>
+              Style.DEFAULT.fg(Color.Yellow)
+            case _ => Style.DEFAULT
+        )
+      ).render(area, buf)
+      if state.focusedInput == InputSection.Description && state.inputMode == InputMode.Input
+      then
+        frame.setCursor(
+          x = area.x + Grapheme(state.description).width + 1,
+          y = area.y + 1
+        )
 
     val priorities = Priority.values.map: priority =>
       Spans(Array(Span.nostyle(priority.toString())))
 
-    val tabs = TabsWidget(
-      titles = priorities,
-      block = Some(
-        BlockWidget(
-          borders = Borders.ALL,
-          title = Some(Spans.nostyle("Priority"))
-        )
-      ),
-      selected = state.priority.ordinal,
-      highlightStyle =
-        if state.focusedInput == InputSection.Priority then
-          Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
-        else Style.DEFAULT
+    val tabs = BlockWidget(
+      borders = Borders.ALL,
+      title = Some(Spans.nostyle("Priority"))
+    )(
+      TabsWidget(
+        titles = priorities,
+        selected = state.priority.ordinal,
+        highlightStyle =
+          if state.focusedInput == InputSection.Priority then
+            Style(addModifier = Modifier.BOLD, fg = Some(Color.Yellow))
+          else Style.DEFAULT
+      )
     )
-    frame.renderWidget(tabs, chunks(3))
-
-    if state.focusedInput != InputSection.Priority then
-      state.inputMode match
-        case InputMode.Normal => ()
-        case InputMode.Input =>
-          val (focused, chunk) =
-            if state.focusedInput == InputSection.Title then (state.title, 1)
-            else (state.description, 2)
-          frame.setCursor(
-            x = chunks(chunk).x + Grapheme(focused).width + 1,
-            y = chunks(chunk).y + 1
-          )
 
     val msg = state.focusedInput match
       case InputSection.Title | InputSection.Description =>
@@ -115,6 +107,16 @@ object NewItem:
         )
 
     val helpMessage = ParagraphWidget(text = msg)
-    frame.renderWidget(helpMessage, chunks(4))
+
+    Layout
+      .detailed(direction = Direction.Vertical, margin = Margin(3))(
+        (Constraint.Length(2), Header.widget),
+        (Constraint.Length(3), titleWidget),
+        (Constraint.Length(3), descriptionWidget),
+        (Constraint.Length(3), tabs),
+        (Constraint.Length(3), helpMessage)
+      )
+      .render(frame.size, frame.buffer)
+
   end render
 end NewItem
