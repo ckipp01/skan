@@ -1,10 +1,11 @@
-//> using scala "3.3.0-RC5"
-//> using lib "com.olvind.tui::tui:0.0.7"
-//> using lib "com.lihaoyi::upickle:3.1.0"
-//> using lib "com.lihaoyi::os-lib:0.9.1"
-//> using lib "dev.dirs:directories:26"
-//> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
-//> using file "../.scala-build/BuildInfo.scala"
+//> using scala 3.3.0-RC5
+//> using dep com.olvind.tui::tui:0.0.7
+//> using dep com.lihaoyi::upickle:3.1.0
+//> using dep com.lihaoyi::os-lib:0.9.1
+//> using dep dev.dirs:directories:26
+//> using test.dep org.scalameta::munit::0.7.29
+//> using options -deprecation -feature -explain -Wunused:all
+//> using file ../.scala-build/BuildInfo.scala
 
 package skan
 
