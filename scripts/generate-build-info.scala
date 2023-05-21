@@ -1,7 +1,7 @@
-//> using scala "3.3.0-RC5"
+//> using scala "3.3.0-RC6"
 //> using options "-deprecation", "-feature", "-explain", "-Wunused:all"
 //> using lib "com.lihaoyi::os-lib:0.9.1"
-//> using lib "com.outr::scribe:3.11.1"
+//> using lib "com.outr::scribe:3.11.3"
 //> using lib "com.github.sbt::dynver:5.0.1"
 
 package skan.scripts
