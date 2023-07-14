@@ -1,6 +1,6 @@
 //> using scala 3.3.0
 //> using dep com.olvind.tui::tui:0.0.7
-//> using dep com.lihaoyi::upickle:3.1.0
+//> using dep com.lihaoyi::upickle:3.1.2
 //> using dep com.lihaoyi::os-lib:0.9.1
 //> using dep dev.dirs:directories:26
 //> using test.dep org.scalameta::munit::0.7.29
