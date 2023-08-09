@@ -5,6 +5,7 @@
 //> using dep dev.dirs:directories:26
 //> using test.dep org.scalameta::munit::0.7.29
 //> using options -deprecation -feature -explain -Wunused:all
+//> using computeVersion git:dynver
 //> using buildInfo
 
 package skan
