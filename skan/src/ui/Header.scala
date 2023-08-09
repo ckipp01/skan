@@ -1,9 +1,8 @@
 package skan.ui
 
+import scala.cli.build.BuildInfo
 import tui.*
 import tui.widgets.ParagraphWidget
-
-import skan.BuildInfo
 
 object Header:
   /** Render the header which displays the name and version for Skan.
@@ -22,7 +21,7 @@ object Header:
             Style(addModifier = Modifier.BOLD)
           ),
           Spans.styled(
-            s"v${BuildInfo.version}",
+            s"v${BuildInfo.projectVersion.getOrElse("NO-VERSION")}",
             Style(fg = Some(Color.White), addModifier = Modifier.DIM)
               .addModifier(Modifier.ITALIC)
           )

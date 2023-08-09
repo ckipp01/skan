@@ -5,7 +5,7 @@
 //> using dep dev.dirs:directories:26
 //> using test.dep org.scalameta::munit::0.7.29
 //> using options -deprecation -feature -explain -Wunused:all
-//> using file ../.scala-build/BuildInfo.scala
+//> using buildInfo
 
 package skan
 
