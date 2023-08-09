@@ -16,7 +16,7 @@ package:
 		--graalvm-args -H:IncludeResources=libnative-x86_64-linux-crossterm.so \
 		--graalvm-args -H:IncludeResources=native-x86_64-windows-crossterm.dll \
 		--graalvm-args -H:-UseServiceLoaderFeature \
-		skan/ -o out/skan
+		. -o out/skan
 
 run:
 	scala-cli run .
