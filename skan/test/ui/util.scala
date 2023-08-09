@@ -1,11 +1,11 @@
 package skan.ui
 
 import munit.Assertions.*
+import scala.cli.build.BuildInfo
 import tui.*
 import tui.internal.saturating.*
 import tui.widgets.ListWidget
 
-import skan.BuildInfo
 import skan.ContextState
 import skan.Config
 import skan.NewItemState
@@ -18,11 +18,11 @@ import scala.collection.mutable
   */
 object Util:
   def versionLine(width: Int) =
-    val versionLength = BuildInfo.version.length() + 1
+    val versionLength = BuildInfo.projectVersion.get.length() + 1
     val need = width - versionLength
     val back = " ".repeat(need / 2)
     val front = if need % 2 == 0 then back else back + " "
-    front + "v" + BuildInfo.version + back
+    front + "v" + BuildInfo.projectVersion.get + back
 
   def checkUi(state: ContextState, expected: Buffer, config: Config) =
     val backend = TestBackend(80, 35)

@@ -1,5 +1,4 @@
 package:
-	make generate-build-info
 	scala-cli --power \
 		package \
 		--native-image \
@@ -19,39 +18,27 @@ package:
 		--graalvm-args -H:-UseServiceLoaderFeature \
 		skan/ -o out/skan
 
-generate-build-info:
-	scala-cli run scripts/generate-build-info.scala
-
 run:
-	make generate-build-info
-	scala-cli run skan
+	scala-cli run .
 
 clean:
 	rm -rf skan/.scala-build/
 	rm -rf skan/.bsp/
-	rm -rf scripts/.scala-build/
-	rm -rf scripts/.bsp
 
 install:
 	cp out/skan ~/bin/skan
 
 format:
-	scala-cli format scripts
-	scala-cli format skan
+	scala-cli format .
 
 format-check:
-	scala-cli format --check scripts
-	scala-cli format --check skan
+	scala-cli format --check .
 
 test:
-	make generate-build-info
-	scala-cli test skan
+	scala-cli test .
 
 compile:
-	make generate-build-info
-	scala-cli compile skan
+	scala-cli compile .
 
-setup-for-ide:
-	make generate-build-info
-	scala-cli setup-ide scripts
-	scala-cli setup-ide skan
+setup-ide:
+	scala-cli setup-ide .
