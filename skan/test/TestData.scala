@@ -9,7 +9,7 @@ import java.time.Instant
 object TestData:
   val defaultItems = Vector(
     BoardItem(
-      date = Instant.parse("2023-04-12T20:48:25.061615Z"),
+      date = Instant.parse("2023-04-11T20:48:25.061615Z"),
       title = "Here is a normal one",
       description = "Some description",
       status = Status.TODO,
@@ -47,7 +47,7 @@ object TestData:
 
   val secondaryItems = Vector(
     BoardItem(
-      date = Instant.parse("2023-04-12T20:48:25.061615Z"),
+      date = Instant.parse("2023-04-11T20:48:25.061615Z"),
       title = "Here is a normal one",
       description = "Some description",
       status = Status.TODO,
