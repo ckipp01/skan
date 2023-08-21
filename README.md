@@ -111,6 +111,9 @@ configurations values and their defaults are below:
 ```json
 {
     "dataDir": "specific to your OS, see above for the default data dir",
-    "zoneId": "GMT+2"
+    "zoneId": "GMT+2",
+    "boardOrder": "priority"
 }
 ```
+
+The other option for `boardOrder` is `date`.

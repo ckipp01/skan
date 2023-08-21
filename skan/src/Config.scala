@@ -11,11 +11,18 @@ import upickle.default.ReadWriter
   *   The location of where to read the data from.
   * @param zoneId
   *   The ZoneId of the user.
+  * @param boardOrder
+  *   How the items on the board are sorted
   */
 final case class Config(
     dataDir: os.Path = Config.defaultDataDir,
-    zoneId: ZoneId = ZoneId.of("GMT+2")
-) derives ReadWriter
+    zoneId: ZoneId = ZoneId.of("GMT+2"),
+    boardOrder: Order = Order.priority
+) derives ReadWriter:
+  val ordering: (BoardItem, BoardItem) => Boolean = (a, b) =>
+    boardOrder match
+      case Order.date     => a.date.compareTo(b.date) < 0
+      case Order.priority => a.priority.ordinal > b.priority.ordinal
 
 object Config:
   private val projectDirs = ProjectDirectories.from("io", "kipp", "skan")
@@ -49,4 +56,15 @@ object Config:
       zoneId => zoneId.getId(),
       string => ZoneId.of(string)
     )
+
+  given ReadWriter[Order] = upickle.default
+    .readwriter[String]
+    .bimap[Order](
+      order => order.toString().toLowerCase(),
+      string => Order.valueOf(string.toLowerCase())
+    )
+
 end Config
+
+enum Order:
+  case date, priority
