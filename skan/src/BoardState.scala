@@ -17,16 +17,21 @@ final case class BoardState(
     todoState: ListWidget.State,
     inProgressState: ListWidget.State,
     items: Array[BoardItem],
-    focusedList: Status
+    focusedList: Status,
+    boardOrder: Order
 ):
 
   // TODO an improvement would be during progress don't edit the array in place,
   // instead make it a vector and then these can be vals here.
-  def todoItems(): Array[BoardItem] = items.collect:
-    case item @ BoardItem(_, _, _, Status.TODO, _) => item
+  def todoItems(): Array[BoardItem] = items
+    .collect:
+      case item @ BoardItem(_, _, _, Status.TODO, _) => item
+    .sortWith(ordering)
 
-  def inProgressItems(): Array[BoardItem] = items.collect:
-    case item @ BoardItem(_, _, _, Status.INPROGRESS, _) => item
+  def inProgressItems(): Array[BoardItem] = items
+    .collect:
+      case item @ BoardItem(_, _, _, Status.INPROGRESS, _) => item
+    .sortWith(ordering)
 
   /** Switches the main column view in the board UI. The progression goes:
     *
@@ -188,6 +193,11 @@ final case class BoardState(
     */
   def withNewItem(item: BoardItem): BoardState =
     this.copy(items = items.appended(item))
+
+  private val ordering: (BoardItem, BoardItem) => Boolean = (a, b) =>
+    boardOrder match
+      case Order.date     => a.date.compareTo(b.date) < 0
+      case Order.priority => a.priority.ordinal > b.priority.ordinal
 end BoardState
 
 object BoardState:
@@ -199,11 +209,15 @@ object BoardState:
     * @return
     *   The newly created state.
     */
-  def fromItems(items: Vector[BoardItem]): BoardState =
+  def fromItems(
+      items: Vector[BoardItem],
+      boardOrder: Order = Order.priority
+  ): BoardState =
     BoardState(
       todoState =
         ListWidget.State(selected = if items.size > 0 then Some(0) else None),
       inProgressState = ListWidget.State(selected = None),
       items = items.toArray,
-      focusedList = Status.TODO
+      focusedList = Status.TODO,
+      boardOrder = boardOrder
     )

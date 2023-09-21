@@ -18,11 +18,7 @@ final case class Config(
     dataDir: os.Path = Config.defaultDataDir,
     zoneId: ZoneId = ZoneId.of("GMT+2"),
     boardOrder: Order = Order.priority
-) derives ReadWriter:
-  val ordering: (BoardItem, BoardItem) => Boolean = (a, b) =>
-    boardOrder match
-      case Order.date     => a.date.compareTo(b.date) < 0
-      case Order.priority => a.priority.ordinal > b.priority.ordinal
+) derives ReadWriter
 
 object Config:
   private val projectDirs = ProjectDirectories.from("io", "kipp", "skan")
