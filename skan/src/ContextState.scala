@@ -107,9 +107,10 @@ case class ContextState(
       activeContext = newName
     )
 
-  def addContext(name: String): ContextState =
+  def addContext(name: String, boardOrder: Order): ContextState =
     this.copy(
-      boards = boards.updated(name, BoardState.fromItems(Vector.empty)),
+      boards =
+        boards.updated(name, BoardState.fromItems(Vector.empty, boardOrder)),
       activeContext = name
     )
 
@@ -153,23 +154,23 @@ object ContextState:
           val contents = os.read(file)
           val items = fromJson(contents)
           val name = file.baseName
-          (name, BoardState.fromItems(items))
+          (name, BoardState.fromItems(items, config.boardOrder))
         .toMap
-      if boards.isEmpty then default(config.dataDir)
+      if boards.isEmpty then default(config.dataDir, config.boardOrder)
       else ContextState(boards, boards.keys.toVector.sorted.head)
-    else default(config.dataDir)
+    else default(config.dataDir, config.boardOrder)
 
   private def toJson(items: Array[BoardItem]): String =
     upickle.default.write(items)
 
-  private def default(dir: os.Path) =
+  private def default(dir: os.Path, boardOrder: Order) =
     os.write.over(
       target = dir / "default.json",
       data = "",
       createFolders = true
     )
     ContextState(
-      Map("default" -> BoardState.fromItems(Vector.empty)),
+      Map("default" -> BoardState.fromItems(Vector.empty, boardOrder)),
       "default"
     )
 

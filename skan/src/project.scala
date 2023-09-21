@@ -1,5 +1,5 @@
 //> using scala 3.3.1
-//> using jvm 17
+//> using jvm 19
 //> using dep com.olvind.tui::tui:0.0.7
 //> using dep com.lihaoyi::upickle:3.1.3
 //> using dep com.lihaoyi::os-lib:0.9.1
@@ -144,7 +144,8 @@ import skan.ui.*
               runNewContext(contextState, newText)
           case _: KeyCode.Enter =>
             if newContextName.nonEmpty then
-              val newState = contextState.addContext(newContextName)
+              val newState =
+                contextState.addContext(newContextName, config.boardOrder)
               runBoard(newState)
             else runBoard(contextState)
           case _: KeyCode.Esc =>

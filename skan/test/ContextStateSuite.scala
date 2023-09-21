@@ -18,7 +18,7 @@ class ContextStateSuite extends munit.FunSuite:
     assertEquals(newState.activeContext, "b")
 
   test("can-add-context"):
-    val newContext = contextState.addContext("test")
+    val newContext = contextState.addContext("test", config.boardOrder)
     val expectedContext = contextState.copy(
       boards = contextState.boards
         .updated("test", BoardState.fromItems(Vector.empty)),
@@ -29,7 +29,7 @@ class ContextStateSuite extends munit.FunSuite:
     assertEquals(newContext.sortedKeys, expectedContext.sortedKeys)
 
   test("can-remove-context"):
-    val newContext = contextState.addContext("test")
+    val newContext = contextState.addContext("test", config.boardOrder)
     assertEquals(newContext.activeContext, "test")
     assertEquals(newContext.sortedKeys.size, 3)
     val deleted = newContext.deleteContext(config)

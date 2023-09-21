@@ -58,8 +58,8 @@ class BoardUiSuite extends munit.FunSuite:
   test("basic-board-by-date"):
     val state = ContextState(
       boards = Map(
-        "a" -> BoardState.fromItems(defaultItems),
-        "b" -> BoardState.fromItems(secondaryItems)
+        "a" -> BoardState.fromItems(defaultItems, Order.date),
+        "b" -> BoardState.fromItems(secondaryItems, Order.date)
       ),
       activeContext = "a"
     )
@@ -169,13 +169,13 @@ class BoardUiSuite extends munit.FunSuite:
       "  │ a                                                                        │  ",
       "  └──────────────────────────────────────────────────────────────────────────┘  ",
       "  ┌TODOs-1/2───────────────────────────┐┌In Progress─────────────────────────┐  ",
-      "  │IMPORTANT                 2023-04-12││URGENT                    2023-04-12│  ",
-      "  │Here is an Important issue          ││An urgent issue with no descripti...│  ",
-      "  │Short description                   ││                                    │  ",
+      "  │NORMAL                    2023-04-11││URGENT                    2023-04-12│  ",
+      "  │Here is a normal one                ││An urgent issue with no descripti...│  ",
+      "  │Some description                    ││                                    │  ",
       "  │                                    ││                                    │  ",
-      "  │LOW                       2023-04-12││NORMAL                    2023-04-11│  ",
-      "  │Here is a low one                   ││Here is a normal one                │  ",
-      "  │Some lowly description              ││Some description                    │  ",
+      "  │LOW                       2023-04-12││IMPORTANT                 2023-04-12│  ",
+      "  │Here is a low one                   ││Here is an Important issue          │  ",
+      "  │Some lowly description              ││Short description                   │  ",
       "  │                                    ││                                    │  ",
       "  │                                    ││                                    │  ",
       "  │                                    ││                                    │  ",
@@ -400,9 +400,9 @@ class BoardUiSuite extends munit.FunSuite:
       "  │ a                                                                        │  ",
       "  └──────────────────────────────────────────────────────────────────────────┘  ",
       "  ┌TODOs-1/2───────────────────────────┐┌In Progress─────────────────────────┐  ",
-      "  │IMPORTANT                 2023-04-12││URGENT                    2023-04-12│  ",
-      "  │Here is an Important issue          ││An urgent issue with no descripti...│  ",
-      "  │Short description                   ││                                    │  ",
+      "  │NORMAL                    2023-04-11││URGENT                    2023-04-12│  ",
+      "  │Here is a normal one                ││An urgent issue with no descripti...│  ",
+      "  │Some description                    ││                                    │  ",
       "  │                                    ││                                    │  ",
       "  │LOW                       2023-04-12││                                    │  ",
       "  │Here is a low one                   ││                                    │  ",
@@ -483,7 +483,7 @@ class BoardUiSuite extends munit.FunSuite:
       activeContext = "a"
     )
 
-    val updated = state.addContext("a-new-context")
+    val updated = state.addContext("a-new-context", config.boardOrder)
 
     val expected = Buffer.withLines(
       "                                                                                ",

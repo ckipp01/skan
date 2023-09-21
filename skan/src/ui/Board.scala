@@ -108,13 +108,11 @@ object Board:
 
     val todoItems = state
       .todoItems()
-      .sortWith(config.ordering)
       .map: item =>
         toListItem(item, horizontalChunks(0).width)
 
     val inProgressItems = state
       .inProgressItems()
-      .sortWith(config.ordering)
       .map: item =>
         toListItem(item, horizontalChunks(1).width)
 
