@@ -44,6 +44,8 @@ import skan.ui.*
             runBoard(newState)
           case char: KeyCode.Char if char.c() == 'c' =>
             runContextMenu(state, ListWidget.State(selected = Some(0)))
+          case char: KeyCode.Char if char.c() == 'i' =>
+            runInfo(state)
           case _: KeyCode.Enter =>
             state.progress()
             runBoard(state)
@@ -57,6 +59,16 @@ import skan.ui.*
       case _ => runBoard(state)
     end match
   end runBoard
+
+  def runInfo(state: ContextState): Unit =
+    terminal.draw(frame => Info.render(frame, config))
+    jni.read() match
+      case key: Event.Key =>
+        key.keyEvent().code() match
+          case char: KeyCode.Char if char.c() == 'q' =>
+            runBoard(contextState)
+          case _ => runInfo(state)
+      case _ => runInfo(state)
 
   def runContextMenu(
       contextState: ContextState,

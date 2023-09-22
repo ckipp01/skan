@@ -116,4 +116,7 @@ configurations values and their defaults are below:
 }
 ```
 
+If you ever want to see what the values of your config are or can't find your
+config, you can use `i` while inside of your main board view.
+
 The other option for `boardOrder` is `date`.
