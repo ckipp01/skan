@@ -105,12 +105,15 @@ final case class BoardState(
           case None => ()
           case Some(selectedIndex) =>
             val todos = todoItems()
-            val mainIndex = items.indexOf(todos(selectedIndex))
-            items(mainIndex) =
-              items(mainIndex).copy(status = items(mainIndex).status.progress())
-            // We special case this to make sure that if a user progresses an
-            // item at the bottom of the list, we move the selected up.
-            if selectedIndex + 1 == todos.length then previous() else ()
+            if todos.isEmpty then ()
+            else
+              val mainIndex = items.indexOf(todos(selectedIndex))
+              items(mainIndex) = items(mainIndex).copy(status =
+                items(mainIndex).status.progress()
+              )
+              // We special case this to make sure that if a user progresses an
+              // item at the bottom of the list, we move the selected up.
+              if selectedIndex + 1 == todos.length then previous() else ()
       case Status.INPROGRESS =>
         inProgressState.selected match
           case None => ()
@@ -133,10 +136,13 @@ final case class BoardState(
           case None => ()
           case Some(selectedIndex) =>
             val todos = todoItems()
-            val mainIndex = items.indexOf(todos(selectedIndex))
-            items(mainIndex) =
-              items(mainIndex).copy(status = items(mainIndex).status.moveBack())
-            if selectedIndex + 1 == todos.length then previous() else ()
+            if todos.isEmpty then ()
+            else
+              val mainIndex = items.indexOf(todos(selectedIndex))
+              items(mainIndex) = items(mainIndex).copy(status =
+                items(mainIndex).status.moveBack()
+              )
+              if selectedIndex + 1 == todos.length then previous() else ()
       case Status.INPROGRESS =>
         inProgressState.selected match
           case None => ()
