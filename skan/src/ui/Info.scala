@@ -17,6 +17,7 @@ object Info:
         Constraint.Length(3),
         Constraint.Length(3),
         Constraint.Length(3),
+        Constraint.Length(3),
         Constraint.Length(3)
       )
     ).split(frame.size)
@@ -38,6 +39,19 @@ object Info:
 
     frame.renderWidget(
       ParagraphWidget(
+        text = Text.nostyle(Config.configFile.toString),
+        block = Some(
+          BlockWidget(
+            borders = Borders.ALL,
+            title = Some(Spans.nostyle("Config File"))
+          )
+        )
+      ),
+      chunks(2)
+    )
+
+    frame.renderWidget(
+      ParagraphWidget(
         text = Text.nostyle(config.zoneId.toString),
         block = Some(
           BlockWidget(
@@ -46,7 +60,7 @@ object Info:
           )
         )
       ),
-      chunks(2)
+      chunks(3)
     )
 
     frame.renderWidget(
@@ -59,7 +73,7 @@ object Info:
           )
         )
       ),
-      chunks(3)
+      chunks(4)
     )
 
     val helpText = Text.from(
@@ -69,6 +83,6 @@ object Info:
     val helpWidget =
       ParagraphWidget(text = helpText, wrap = Some(Wrap(trim = true)))
 
-    frame.renderWidget(helpWidget, chunks(4))
+    frame.renderWidget(helpWidget, chunks(5))
   end render
 end Info
