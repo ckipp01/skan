@@ -1,5 +1,7 @@
 package skan
 
+import java.time.Instant
+
 /** The top level state of the application containing all of the various
   * contexts. For most operations that have to do with the selected board this
   * just acts as a facilators and calls the correct operation on the the correct
@@ -109,8 +111,8 @@ case class ContextState(
 
   def addContext(name: String, boardOrder: Order): ContextState =
     this.copy(
-      boards =
-        boards.updated(name, BoardState.fromItems(Vector.empty, boardOrder)),
+      boards = boards
+        .updated(name, BoardState.fromItems(Vector.empty, boardOrder)),
       activeContext = name
     )
 
@@ -123,7 +125,14 @@ case class ContextState(
     *   The new state
     */
   def deleteContext(config: Config): ContextState =
-    os.remove(config.dataDir / s"${activeContext}.json")
+    val file = config.dataDir / s"${activeContext}.json"
+    if os.exists(file) then
+      os.move(
+        from = config.dataDir / s"${activeContext}.json",
+        to =
+          Config.archiveDir / s"${Instant.now().toString()}-${activeContext}.json",
+        createFolders = true
+      )
     val newBoards = boards.removed(activeContext)
     if newBoards.isEmpty then ContextState.fromConfig(config)
     else
