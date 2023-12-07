@@ -27,6 +27,7 @@ object Config:
   private lazy val defaultDataDir = os.Path(dataDir) / "contexts"
   val configFile = os.Path(configDir) / "config.json"
   val archiveDir = os.Path(dataDir) / "archive"
+  val backupDir = os.Path(dataDir) / "backup"
 
   private def fromJson(json: String) =
     upickle.default.read[Config](json)

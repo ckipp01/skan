@@ -1,13 +1,12 @@
 package skan.ui
 
 import skan.*
-
 import tui.*
-import tui.widgets.tabs.TabsWidget
 import tui.widgets.BlockWidget
 import tui.widgets.ListWidget
 import tui.widgets.ParagraphWidget
 import tui.widgets.ParagraphWidget.Wrap
+import tui.widgets.tabs.TabsWidget
 
 object Board:
   def render(
@@ -20,7 +19,7 @@ object Board:
     val verticalChunk = Layout(
       direction = Direction.Vertical,
       constraints = Array(
-        Constraint.Length(2),
+        Constraint.Length(2 + contextState.message.map(_ => 1).getOrElse(0)),
         Constraint.Length(3),
         Constraint.Percentage(75),
         Constraint.Length(2)
@@ -36,7 +35,7 @@ object Board:
       )
     ).split(verticalChunk(2))
 
-    Header.render(frame, verticalChunk(0))
+    Header.render(frame, verticalChunk(0), contextState.message)
 
     val contexts = contextState.sortedKeys.map: context =>
       Spans(Array(Span.nostyle(context)))
