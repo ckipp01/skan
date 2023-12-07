@@ -2,7 +2,7 @@
 //> using jvm 19
 //> using dep com.olvind.tui::tui:0.0.7
 //> using dep com.lihaoyi::upickle:3.1.3
-//> using dep com.lihaoyi::os-lib:0.9.1
+//> using dep com.lihaoyi::os-lib:0.9.2
 //> using dep dev.dirs:directories:26
 //> using test.dep org.scalameta::munit::0.7.29
 //> using options -deprecation -feature -explain -Wunused:all
@@ -22,8 +22,18 @@ import skan.ui.*
   val config = Config.load()
   val contextState = ContextState.fromConfig(config)
 
-  def runBoard(state: ContextState): Unit =
-    terminal.draw(frame => Board.render(frame, state, config))
+  def runBoard(_state: ContextState): Unit =
+    terminal.draw(frame => Board.render(frame, _state, config))
+
+    /** After draw we reset the message since we've already shown it once. We
+      * could be fancy and try to remove it after a certain amount of time if
+      * there is no action, but honestly most people will do something that will
+      * cause runBoard to happen again anyways.
+      */
+    val state = _state.message match
+      case None        => _state
+      case Some(value) => _state.copy(message = None)
+
     jni.read() match
       case key: Event.Key =>
         key.keyEvent().code() match
@@ -46,6 +56,8 @@ import skan.ui.*
             runContextMenu(state, ListWidget.State(selected = Some(0)))
           case char: KeyCode.Char if char.c() == 'i' =>
             runInfo(state)
+          case char: KeyCode.Char if char.c() == 'b' =>
+            runBoard(state.backup(config))
           case _: KeyCode.Enter =>
             state.progress()
             runBoard(state)

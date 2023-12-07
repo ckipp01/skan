@@ -120,3 +120,9 @@ If you ever want to see what the values of your config are or can't find your
 config, you can use `i` while inside of your main board view.
 
 The other option for `boardOrder` is `date`.
+
+### Backups
+
+When in the main board view `b` will trigger a backup, which will zip up all
+your contexts (which are just json files) and store them under `backup` in your
+datadir.

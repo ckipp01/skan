@@ -1,6 +1,19 @@
 package skan
 
+import os.Path
+import os.Source
+import skan.ui.Message
+
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.time.Instant
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+import scala.util.Using
+import scala.util.Failure
+import scala.util.Success
+import tui.Color
 
 /** The top level state of the application containing all of the various
   * contexts. For most operations that have to do with the selected board this
@@ -14,7 +27,8 @@ import java.time.Instant
   */
 case class ContextState(
     boards: Map[String, BoardState],
-    activeContext: String
+    activeContext: String,
+    message: Option[Message] = None
 ):
   /** All the board names in a sorted fashion.
     */
@@ -29,6 +43,46 @@ case class ContextState(
     for (name, board) <- boards do
       val json = ContextState.toJson(board.items)
       os.write.over(config.dataDir / s"${name}.json", json)
+
+  def backup(config: Config) =
+    save(config)
+    os.makeDir.all(Config.backupDir)
+    val ouputPath = Config.backupDir / s"${Instant.now()}-backup.zip"
+    val output = new File(ouputPath.toString)
+
+    val result = Using.Manager { use =>
+      val fos = use(new FileOutputStream(output))
+      val zos = use(new ZipOutputStream(fos))
+      val files = os.walk(config.dataDir)
+      files.foreach { file =>
+        val entry = new ZipEntry(file.last)
+        zos.putNextEntry(entry)
+        val fis = use(new FileInputStream(file.toIO))
+        val buffer = new Array[Byte](1024)
+        var length = fis.read(buffer)
+        while length > 0 do
+          zos.write(buffer, 0, length)
+          length = fis.read(buffer)
+        zos.closeEntry()
+      }
+    }
+
+    result match
+      case Failure(exception) =>
+        this.copy(message =
+          Some(
+            Message(
+              s"Unable to perform backup -- ${exception.getMessage()}",
+              Color.Red
+            )
+          )
+        )
+      case Success(value) =>
+        this.copy(message =
+          Some(Message("Successfully backed up!", Color.Blue))
+        )
+
+  end backup
 
   /** Select the previous item in the current active board.
     */
