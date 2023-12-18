@@ -51,7 +51,7 @@ jobs:
       - run: make package
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: skan-x86_64-apple-darwin
           path: ./out/skan
@@ -75,7 +75,7 @@ jobs:
       - run: make package
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: skan-x86_64-linux
           path: ./out/skan
