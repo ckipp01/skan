@@ -8,3 +8,4 @@ crossterm.dll
 scripts/.scalafmt.conf
 out/
 dest/
+.metals/
