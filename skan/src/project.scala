@@ -1,4 +1,4 @@
-//> using scala 3.4.2
+//> using scala 3.4.3
 //> using jvm 19
 //> using dep com.olvind.tui::tui:0.0.7
 //> using dep com.lihaoyi::upickle:4.0.0
