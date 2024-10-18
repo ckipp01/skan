@@ -2,7 +2,7 @@
 //> using jvm 19
 //> using dep com.olvind.tui::tui:0.0.7
 //> using dep com.lihaoyi::upickle:4.0.2
-//> using dep com.lihaoyi::os-lib:0.10.7
+//> using dep com.lihaoyi::os-lib:0.11.2
 //> using dep dev.dirs:directories:26
 //> using test.dep org.scalameta::munit::1.0.2
 //> using options -deprecation -feature -explain -Wunused:all
